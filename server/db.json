@@ -1,0 +1,163 @@
+{
+  "hotels": [
+    {
+      "id": 1,
+      "name_zh": "上海陆家嘴禧酒店",
+      "name_en": "Joy Hotel Lujiazui",
+      "address": "上海市浦东新区陆家嘴环路1288号",
+      "star": 5,
+      "basePrice": 936,
+      "openDate": "2012-05-20",
+      "status": "published",
+      "tags": ["亲子", "豪华", "免费停车场"],
+      "rooms": [
+        { "id": 101, "name": "经典双床房", "price": 936 },
+        { "id": 102, "name": "行政大床房", "price": 1250 }
+      ],
+      "mainImage": "https://example.com/h1_banner.jpg"
+    },
+    {
+      "id": 2,
+      "name_zh": "艺龙安悦酒店(上海浦东大道店)",
+      "name_en": "Elong Anyue Hotel",
+      "address": "上海市浦东大道1555号",
+      "star": 4,
+      "basePrice": 402,
+      "openDate": "2018-10-12",
+      "status": "published",
+      "tags": ["商务", "近地铁"],
+      "rooms": [
+        { "id": 201, "name": "标准单人房", "price": 402 },
+        { "id": 202, "name": "高级大床房", "price": 550 }
+      ],
+      "mainImage": "https://example.com/h2_banner.jpg"
+    },
+    {
+      "id": 3,
+      "name_zh": "北京国贸大酒店",
+      "name_en": "China World Summit Wing",
+      "address": "北京市朝阳区建国门外大街1号",
+      "star": 5,
+      "basePrice": 1800,
+      "openDate": "2010-08-16",
+      "status": "published",
+      "tags": ["地标景观", "高层视图"],
+      "rooms": [
+        { "id": 301, "name": "豪华大床房", "price": 1800 },
+        { "id": 302, "name": "超豪华套房", "price": 3200 }
+      ],
+      "mainImage": "https://example.com/h3_banner.jpg"
+    },
+    {
+      "id": 4,
+      "name_zh": "杭州西湖漫步民宿",
+      "name_en": "West Lake Stroll Guest House",
+      "address": "杭州市西湖区灵隐路",
+      "star": 3,
+      "basePrice": 350,
+      "openDate": "2021-03-01",
+      "status": "pending",
+      "tags": ["民宿", "西湖周边"],
+      "rooms": [
+        { "id": 401, "name": "温馨大床房", "price": 350 }
+      ],
+      "mainImage": "https://example.com/h4_banner.jpg"
+    },
+    {
+      "id": 5,
+      "name_zh": "广州四季酒店",
+      "name_en": "Four Seasons Hotel Guangzhou",
+      "address": "广州市天河区珠江新城珠江西方路5号",
+      "star": 5,
+      "basePrice": 2100,
+      "openDate": "2012-07-23",
+      "status": "published",
+      "tags": ["奢华", "珠江新城"],
+      "rooms": [
+        { "id": 501, "name": "尊贵大床房", "price": 2100 },
+        { "id": 502, "name": "塔景套房", "price": 4500 }
+      ],
+      "mainImage": "https://example.com/h5_banner.jpg"
+    },
+    {
+      "id": 6,
+      "name_zh": "深圳湾安达仕酒店",
+      "name_en": "Andaz Shenzhen Bay",
+      "address": "深圳市南山区科苑南路2600号",
+      "star": 5,
+      "basePrice": 1950,
+      "openDate": "2020-12-28",
+      "status": "offline",
+      "tags": ["海景", "设计感"],
+      "rooms": [
+        { "id": 601, "name": "海景大床房", "price": 1950 }
+      ],
+      "mainImage": "https://example.com/h6_banner.jpg"
+    },
+    {
+      "id": 7,
+      "name_zh": "成都宽窄巷子精品酒店",
+      "name_en": "Kuanzhai Alley Boutique Hotel",
+      "address": "成都市青羊区宽巷子",
+      "star": 4,
+      "basePrice": 680,
+      "openDate": "2015-11-11",
+      "status": "published",
+      "tags": ["复古", "川味美食"],
+      "rooms": [
+        { "id": 701, "name": "雅致套房", "price": 680 }
+      ],
+      "mainImage": "https://example.com/h7_banner.jpg"
+    },
+    {
+      "id": 8,
+      "name_zh": "南京玄武饭店",
+      "name_en": "Nanjing Xuanwu Hotel",
+      "address": "南京市鼓楼区中央路193号",
+      "star": 5,
+      "basePrice": 750,
+      "openDate": "1986-05-01",
+      "status": "published",
+      "tags": ["老字号", "玄武湖畔"],
+      "rooms": [
+        { "id": 801, "name": "湖景双床房", "price": 750 }
+      ],
+      "mainImage": "https://example.com/h南京.jpg"
+    },
+    {
+      "id": 9,
+      "name_zh": "西安古城墙美居酒店",
+      "name_en": "Mercure Xi'an Ancient Wall",
+      "address": "西安市碑林区顺城路",
+      "star": 4,
+      "basePrice": 480,
+      "openDate": "2019-06-20",
+      "status": "rejected",
+      "tags": ["近景区", "性价比"],
+      "rooms": [
+        { "id": 901, "name": "标准双人间", "price": 480 }
+      ],
+      "mainImage": "https://example.com/h9.jpg"
+    },
+    {
+      "id": 10,
+      "name_zh": "三亚亚龙湾万豪度假酒店",
+      "name_en": "Sanya Marriott Yalong Bay Resort",
+      "address": "三亚市亚龙湾国家旅游度假区",
+      "star": 5,
+      "basePrice": 1350,
+      "openDate": "2004-12-30",
+      "status": "published",
+      "tags": ["沙滩", "度假优先"],
+      "rooms": [
+        { "id": 1001, "name": "园景房", "price": 1350 },
+        { "id": 1002, "name": "海景房", "price": 1850 }
+      ],
+      "mainImage": "https://example.com/h10.jpg"
+    }
+  ],
+  "users": [
+    { "username": "admin", "role": "admin" },
+    { "username": "shanghu1", "role": "merchant" }
+  ]
+}
