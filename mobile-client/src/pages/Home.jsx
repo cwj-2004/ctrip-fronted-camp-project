@@ -88,6 +88,8 @@ export default function Home() {
   }
 
   const [hourlySlot, setHourlySlot] = useState('');
+  const today = new Date();
+  const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
   const handleCalendarChange = (value) => {
     if (!value || !value[0]) {
@@ -398,6 +400,7 @@ export default function Home() {
         </div>
         <Calendar
           selectionMode="range"
+          min={minDate}
           defaultValue={
             checkIn && checkOut ? [checkIn, checkOut] : undefined
           }
