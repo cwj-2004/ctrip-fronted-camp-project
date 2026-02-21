@@ -66,6 +66,7 @@ export default function HotelList() {
   const tagsParam = query.get('tags') || '';
   const checkIn = query.get('checkIn');
   const checkOut = query.get('checkOut');
+  const stayMode = query.get('stayMode') || 'overnight';
 
   const initialTags = useMemo(
     () => (tagsParam ? tagsParam.split(',') : []),
@@ -99,16 +100,29 @@ export default function HotelList() {
 
   const filteredHotels = useMemo(() => {
     let list = [...publishedHotels];
+    if (stayMode === 'hourly') {
+      list = list.filter((h) =>
+        Array.isArray(h.rooms)
+          ? h.rooms.some((r) => r.isHourly)
+          : false
+      );
+    }
     if (keyword) {
       const lower = keyword.toLowerCase();
       list = list.filter((h) => {
         const nameZh = h.name_zh || '';
         const nameEn = h.name_en || '';
         const address = h.address || '';
+        const tagsText = Array.isArray(h.tags) ? h.tags.join('') : '';
+         const roomsText = Array.isArray(h.rooms)
+           ? h.rooms.map((r) => r.name || '').join('')
+           : '';
         return (
           nameZh.toLowerCase().includes(lower) ||
           nameEn.toLowerCase().includes(lower) ||
-          address.toLowerCase().includes(lower)
+          address.toLowerCase().includes(lower) ||
+          tagsText.toLowerCase().includes(lower) ||
+          roomsText.toLowerCase().includes(lower)
         );
       });
     }
@@ -132,7 +146,7 @@ export default function HotelList() {
       });
     }
     return list;
-  }, [publishedHotels, keyword, starFilter, priceFilter, selectedTags]);
+  }, [publishedHotels, keyword, starFilter, priceFilter, selectedTags, stayMode]);
 
   const sortedHotels = useMemo(() => {
     const list = [...filteredHotels];
@@ -183,6 +197,9 @@ export default function HotelList() {
               ? `${checkIn} 至 ${checkOut}`
               : '日期未选择'}
           </div>
+          {keyword && (
+            <div className="list-keyword">关键字：{keyword}</div>
+          )}
           {nights > 0 && (
             <div className="list-nights">共 {nights} 晚</div>
           )}

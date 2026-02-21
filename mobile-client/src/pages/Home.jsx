@@ -1,6 +1,15 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { NavBar, Button, Calendar, Selector, Popup, SearchBar, Toast } from 'antd-mobile';
+import {
+  NavBar,
+  Button,
+  Calendar,
+  Selector,
+  Popup,
+  SearchBar,
+  Toast,
+  DatePicker,
+} from 'antd-mobile';
 
 const provinceCityOptions = [
   {
@@ -36,8 +45,30 @@ function calcNights(start, end) {
   return Math.round(diff / (1000 * 60 * 60 * 24));
 }
 
+function addMonths(date, count) {
+  const d = new Date(date.getTime());
+  const targetMonth = d.getMonth() + count;
+  const year = d.getFullYear() + Math.floor(targetMonth / 12);
+  const month = ((targetMonth % 12) + 12) % 12;
+  const day = d.getDate();
+  const result = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  result.setDate(Math.min(day, lastDay));
+  return result;
+}
+
 export default function Home() {
   const navigate = useNavigate();
+  const today = new Date();
+  const minDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  const defaultCheckIn = minDate;
+  const defaultCheckOut = new Date(
+    minDate.getTime() + 24 * 60 * 60 * 1000
+  );
   const [province, setProvince] = useState('上海');
   const [city, setCity] = useState('上海');
   const [locationStatus, setLocationStatus] = useState('未定位');
@@ -47,8 +78,16 @@ export default function Home() {
   const [tags, setTags] = useState([]);
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [stayMode, setStayMode] = useState('overnight');
-  const [checkIn, setCheckIn] = useState(null);
-  const [checkOut, setCheckOut] = useState(null);
+  const [checkIn, setCheckIn] = useState(defaultCheckIn);
+  const [checkOut, setCheckOut] = useState(defaultCheckOut);
+  const [calendarAnchor, setCalendarAnchor] = useState(defaultCheckIn);
+  const [calendarPageYear, setCalendarPageYear] = useState(
+    defaultCheckIn.getFullYear()
+  );
+  const [calendarPageMonth, setCalendarPageMonth] = useState(
+    defaultCheckIn.getMonth() + 1
+  );
+  const [yearMonthPickerVisible, setYearMonthPickerVisible] = useState(false);
   const [provincePickerVisible, setProvincePickerVisible] = useState(false);
   const [cityPickerVisible, setCityPickerVisible] = useState(false);
   const [provinceSearch, setProvinceSearch] = useState('');
@@ -88,8 +127,8 @@ export default function Home() {
   }
 
   const [hourlySlot, setHourlySlot] = useState('');
-  const today = new Date();
-  const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const calendarRef = useRef(null);
+  const maxDate = addMonths(minDate, 6);
 
   const handleCalendarChange = (value) => {
     if (!value || !value[0]) {
@@ -141,6 +180,17 @@ export default function Home() {
       if (hourlySlot) params.set('hourlySlot', hourlySlot);
     }
     navigate(`/list?${params.toString()}`);
+  };
+
+  const handleReset = () => {
+    setKeyword('');
+    setStarFilter('all');
+    setPriceFilter('all');
+    setTags([]);
+    setCheckIn(defaultCheckIn);
+    setCheckOut(defaultCheckOut);
+    setStayMode('overnight');
+    setHourlySlot('');
   };
 
   const adHotelId = 1;
@@ -207,6 +257,14 @@ export default function Home() {
       </div>
       <div className="home-form">
         <div className="home-field">
+          <div className="field-label">关键字搜索</div>
+          <SearchBar
+            value={keyword}
+            placeholder="酒店名 / 位置 / 关键词"
+            onChange={setKeyword}
+          />
+        </div>
+        <div className="home-field">
           <div className="field-label-row">
             <span className="field-label">入住城市</span>
             <Button
@@ -237,14 +295,6 @@ export default function Home() {
           </div>
         </div>
         <div className="home-field">
-          <div className="field-label">关键字搜索</div>
-          <SearchBar
-            value={keyword}
-            placeholder="酒店名 / 位置 / 关键词"
-            onChange={setKeyword}
-          />
-        </div>
-        <div className="home-field">
           <div className="field-label-row">
             <span className="field-label">入住与离店日期</span>
             <span className="field-label-status">
@@ -257,19 +307,30 @@ export default function Home() {
           </div>
           <div
             className="date-summary"
-            onClick={() => setCalendarVisible(true)}
+            onClick={() => {
+              const anchor = checkIn || minDate;
+              setCalendarAnchor(anchor);
+              setCalendarPageYear(anchor.getFullYear());
+              setCalendarPageMonth(anchor.getMonth() + 1);
+              setCalendarVisible(true);
+            }}
           >
-            <div className="date-line">
-              <span className="date-label">入住</span>
-              <span className="date-value">
-                {checkIn ? formatDate(checkIn) : '请选择'}
-              </span>
+            <div className="date-half">
+              <div className="date-line">
+                <span className="date-label">入住</span>
+                <span className="date-value">
+                  {checkIn ? formatDate(checkIn) : '请选择'}
+                </span>
+              </div>
             </div>
-            <div className="date-line">
-              <span className="date-label">离店</span>
-              <span className="date-value">
-                {checkOut ? formatDate(checkOut) : '请选择'}
-              </span>
+            <div className="date-arrow">→</div>
+            <div className="date-half">
+              <div className="date-line">
+                <span className="date-label">离店</span>
+                <span className="date-value">
+                  {checkOut ? formatDate(checkOut) : '请选择'}
+                </span>
+              </div>
             </div>
           </div>
           {stayMode === 'hourly' && (
@@ -349,15 +410,27 @@ export default function Home() {
             }}
           />
         </div>
-        <Button
-          color="primary"
-          block
-          size="large"
-          onClick={handleSearch}
-          disabled={!checkIn || !checkOut}
-        >
-          搜索酒店
-        </Button>
+      </div>
+      <div className="home-search-footer">
+        <div className="home-search-footer-inner">
+          <button
+            type="button"
+            className="home-reset-button"
+            onClick={handleReset}
+          >
+            <div className="home-reset-icon">↻</div>
+            <div className="home-reset-text">重置</div>
+          </button>
+          <Button
+            color="primary"
+            block
+            size="large"
+            onClick={handleSearch}
+            className="home-search-button"
+          >
+            搜索酒店
+          </Button>
+        </div>
       </div>
       <Popup
         visible={calendarVisible}
@@ -398,14 +471,29 @@ export default function Home() {
             </Button>
           </div>
         </div>
-        <Calendar
-          selectionMode="range"
-          min={minDate}
-          defaultValue={
-            checkIn && checkOut ? [checkIn, checkOut] : undefined
-          }
-          onChange={handleCalendarChange}
-        />
+        <div className="calendar-body-wrapper">
+          <Calendar
+            ref={calendarRef}
+            key={`${calendarAnchor.getFullYear()}-${calendarAnchor.getMonth() + 1}`}
+            selectionMode="range"
+            min={minDate}
+            max={maxDate}
+            defaultValue={
+              checkIn && checkOut
+                ? [checkIn, checkOut]
+                : [calendarAnchor, calendarAnchor]
+            }
+            onChange={handleCalendarChange}
+            onPageChange={(year, month) => {
+              setCalendarPageYear(year);
+              setCalendarPageMonth(month);
+            }}
+          />
+          <div
+            className="calendar-header-click-overlay"
+            onClick={() => setYearMonthPickerVisible(true)}
+          />
+        </div>
       </Popup>
       <Popup
         visible={provincePickerVisible}
@@ -470,6 +558,24 @@ export default function Home() {
           </div>
         </div>
       </Popup>
+      <DatePicker
+        visible={yearMonthPickerVisible}
+        precision="month"
+        title="选择年月"
+        min={minDate}
+        max={maxDate}
+        value={new Date(calendarPageYear, calendarPageMonth - 1, 1)}
+        onClose={() => setYearMonthPickerVisible(false)}
+        onConfirm={(val) => {
+          const year = val.getFullYear();
+          const month = val.getMonth() + 1;
+          setCalendarPageYear(year);
+          setCalendarPageMonth(month);
+          if (calendarRef.current) {
+            calendarRef.current.jumpTo({ year, month });
+          }
+        }}
+      />
     </div>
   );
 }

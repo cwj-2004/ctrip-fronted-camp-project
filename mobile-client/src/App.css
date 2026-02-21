@@ -17,6 +17,10 @@
 
 .page-home {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .home-banner {
@@ -44,6 +48,56 @@
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
+
+.home-search-footer {
+  position: sticky;
+  bottom: 0;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  background-color: #ffffff;
+}
+
+.home-search-footer-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 24px;
+}
+
+.home-reset-button {
+  border: none;
+  background: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #999999;
+  font-size: 12px;
+}
+
+.home-reset-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #cccccc;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #999999;
+}
+
+.home-reset-text {
+  margin-top: 4px;
+}
+
+.home-search-button {
+  flex: 1;
 }
 
 .home-field + .home-field {
@@ -103,17 +157,31 @@
   border-radius: 8px;
   border: 1px solid #eeeeee;
   padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
 }
 
 .date-line {
-  display: flex;
-  justify-content: space-between;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 13px;
   color: #333333;
 }
 
-.date-line + .date-line {
-  margin-top: 6px;
+.date-half {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.date-arrow {
+  width: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: #999999;
 }
 
 .date-label {
@@ -131,14 +199,12 @@
 }
 
 .calendar-header {
-  padding: 12px 0 4px;
+  padding: 12px 16px 4px;
 }
 
 .calendar-mode-toggle {
   display: flex;
   gap: 8px;
-  justify-content: flex-start;
-  margin-left: 16px;
 }
 
 .hourly-slot-row {
@@ -152,7 +218,7 @@
 }
 
 .calendar-header {
-  padding: 12px 0 4px;
+  padding: 12px 16px 4px;
 }
 
 .calendar-title {
@@ -164,6 +230,63 @@
 .calendar-mode-toggle {
   display: flex;
   gap: 8px;
+}
+
+.calendar-quick-months {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.calendar-year-month {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+  cursor: pointer;
+}
+
+.calendar-body-wrapper {
+  position: relative;
+}
+
+.calendar-header-click-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  z-index: 1;
+}
+
+.calendar-year-month-panel {
+  margin-top: 8px;
+  padding: 8px 0;
+}
+
+.calendar-year-row,
+.calendar-month-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.calendar-year-option,
+.calendar-month-option {
+  border: 1px solid #eeeeee;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  background-color: #ffffff;
+  color: #666666;
+}
+
+.calendar-year-option-active,
+.calendar-month-option-active {
+  border-color: #0086ff;
+  color: #0086ff;
+  background-color: #e6f3ff;
 }
 
 .filter-row {
@@ -209,6 +332,12 @@
 .list-dates {
   font-size: 12px;
   color: #888888;
+}
+
+.list-keyword {
+  font-size: 12px;
+  color: #666666;
+  margin-top: 2px;
 }
 
 .list-nights {
