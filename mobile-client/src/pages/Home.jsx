@@ -1,12 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavBar, Button, Calendar, Selector, Popup, SearchBar, Toast } from 'antd-mobile';
 
-const cityOptions = [
-  { label: '上海', value: 'Shanghai' },
-  { label: '北京', value: 'Beijing' },
-  { label: '广州', value: 'Guangzhou' },
-  { label: '深圳', value: 'Shenzhen' },
+const provinceCityOptions = [
+  {
+    province: '上海',
+    cities: ['上海'],
+  },
+  {
+    province: '北京',
+    cities: ['北京'],
+  },
+  {
+    province: '广东',
+    cities: ['广州', '深圳'],
+  },
+  {
+    province: '浙江',
+    cities: ['杭州', '宁波'],
+  },
 ];
 
 function formatDate(date) {
@@ -26,7 +38,8 @@ function calcNights(start, end) {
 
 export default function Home() {
   const navigate = useNavigate();
-  const [city, setCity] = useState('Shanghai');
+  const [province, setProvince] = useState('上海');
+  const [city, setCity] = useState('上海');
   const [locationStatus, setLocationStatus] = useState('未定位');
   const [keyword, setKeyword] = useState('');
   const [starFilter, setStarFilter] = useState('all');
@@ -35,8 +48,43 @@ export default function Home() {
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [checkIn, setCheckIn] = useState(null);
   const [checkOut, setCheckOut] = useState(null);
+  const [provincePickerVisible, setProvincePickerVisible] = useState(false);
+  const [cityPickerVisible, setCityPickerVisible] = useState(false);
+  const [provinceSearch, setProvinceSearch] = useState('');
+  const [citySearch, setCitySearch] = useState('');
 
   const nights = calcNights(checkIn, checkOut);
+
+  const provinceKeyword = provinceSearch.trim();
+  const filteredProvinces = provinceCityOptions
+    .map((item) => item.province)
+    .filter((name) => (provinceKeyword ? name.includes(provinceKeyword) : true));
+
+  const cityKeyword = citySearch.trim();
+  const allCities = [];
+  provinceCityOptions.forEach((item) => {
+    item.cities.forEach((cityName) => {
+      allCities.push({
+        province: item.province,
+        city: cityName,
+      });
+    });
+  });
+
+  let filteredCities;
+  if (cityKeyword) {
+    filteredCities = allCities.filter((item) =>
+      item.city.includes(cityKeyword)
+    );
+  } else {
+    const currentProvince =
+      provinceCityOptions.find((item) => item.province === province) ||
+      provinceCityOptions[0];
+    filteredCities = currentProvince.cities.map((cityName) => ({
+      province: currentProvince.province,
+      city: cityName,
+    }));
+  }
 
   const handleCalendarChange = (value) => {
     if (!value || !value[0]) {
@@ -74,19 +122,46 @@ export default function Home() {
     }
     setLocationStatus('定位中...');
     navigator.geolocation.getCurrentPosition(
-      () => {
-        setLocationStatus('已定位');
+      (position) => {
+        const { latitude, longitude } = position.coords || {};
+        if (latitude && longitude) {
+          setLocationStatus('已定位');
+        } else {
+          setLocationStatus('已定位');
+        }
         Toast.show('定位成功');
       },
-      () => {
-        setLocationStatus('定位失败');
-        Toast.show('定位失败');
+      (error) => {
+        if (error && error.code === 1) {
+          setLocationStatus('定位失败（未授权）');
+          Toast.show('定位失败，请检查浏览器定位权限');
+        } else {
+          setLocationStatus('定位失败');
+          Toast.show('定位失败');
+        }
       },
       {
         enableHighAccuracy: true,
-        timeout: 5000,
+        timeout: 8000,
       }
     );
+  };
+
+  const handleSelectProvince = (name) => {
+    setProvince(name);
+    setProvincePickerVisible(false);
+    const target = provinceCityOptions.find((item) => item.province === name);
+    if (target) {
+      if (!target.cities.includes(city)) {
+        setCity(target.cities[0] || '');
+      }
+    }
+  };
+
+  const handleSelectCity = (provinceName, cityName) => {
+    setCity(cityName);
+    setProvince(provinceName);
+    setCityPickerVisible(false);
   };
 
   return (
@@ -102,29 +177,32 @@ export default function Home() {
       <div className="home-form">
         <div className="home-field">
           <div className="field-label-row">
-            <span className="field-label">当前地点</span>
-            <span className="field-label-status">{locationStatus}</span>
-          </div>
-          <div className="home-location-row">
-            <Selector
-              options={cityOptions}
-              value={[city]}
-              onChange={(val) => {
-                if (val && val[0]) {
-                  setCity(val[0]);
-                }
-              }}
-              columns={3}
-            />
+            <span className="field-label">入住城市</span>
             <Button
               size="small"
               color="primary"
               fill="outline"
-              className="location-button"
               onClick={handleLocate}
             >
               使用定位
             </Button>
+          </div>
+          <div className="field-label-status">{locationStatus}</div>
+          <div className="home-location-row">
+            <div
+              className="location-select"
+              onClick={() => setProvincePickerVisible(true)}
+            >
+              <div className="location-select-label">省份</div>
+              <div className="location-select-value">{province}</div>
+            </div>
+            <div
+              className="location-select"
+              onClick={() => setCityPickerVisible(true)}
+            >
+              <div className="location-select-label">城市</div>
+              <div className="location-select-value">{city}</div>
+            </div>
           </div>
         </div>
         <div className="home-field">
@@ -242,6 +320,69 @@ export default function Home() {
           }
           onChange={handleCalendarChange}
         />
+      </Popup>
+      <Popup
+        visible={provincePickerVisible}
+        onMaskClick={() => setProvincePickerVisible(false)}
+        bodyStyle={{
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          minHeight: '40vh',
+        }}
+      >
+        <div className="picker-panel">
+          <div className="picker-search">
+            <SearchBar
+              value={provinceSearch}
+              placeholder="搜索省份"
+              onChange={setProvinceSearch}
+            />
+          </div>
+          <div className="picker-list">
+            {filteredProvinces.map((name) => (
+              <div
+                key={name}
+                className="picker-item"
+                onClick={() => handleSelectProvince(name)}
+              >
+                <span>{name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Popup>
+      <Popup
+        visible={cityPickerVisible}
+        onMaskClick={() => setCityPickerVisible(false)}
+        bodyStyle={{
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          minHeight: '40vh',
+        }}
+      >
+        <div className="picker-panel">
+          <div className="picker-search">
+            <SearchBar
+              value={citySearch}
+              placeholder="搜索城市"
+              onChange={setCitySearch}
+            />
+          </div>
+          <div className="picker-list">
+            {filteredCities.map((item) => (
+              <div
+                key={`${item.province}-${item.city}`}
+                className="picker-item"
+                onClick={() => handleSelectCity(item.province, item.city)}
+              >
+                <span>{item.city}</span>
+                {item.province !== province && (
+                  <span className="picker-item-sub">{item.province}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </Popup>
     </div>
   );

@@ -78,6 +78,27 @@
   white-space: nowrap;
 }
 
+.location-select {
+  flex: 1;
+  border-radius: 8px;
+  border: 1px solid #eeeeee;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.location-select-label {
+  font-size: 11px;
+  color: #999999;
+}
+
+.location-select-value {
+  font-size: 14px;
+  color: #333333;
+  font-weight: 500;
+}
+
 .date-summary {
   border-radius: 8px;
   border: 1px solid #eeeeee;
@@ -381,6 +402,34 @@
 .section-content {
   font-size: 13px;
   color: #555555;
+}
+
+.picker-panel {
+  padding: 12px 16px 16px;
+}
+
+.picker-search {
+  margin-bottom: 8px;
+}
+
+.picker-list {
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.picker-item {
+  padding: 8px 4px;
+  border-bottom: 1px solid #f5f5f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #333333;
+}
+
+.picker-item-sub {
+  font-size: 12px;
+  color: #999999;
 }
 
 .detail-trip-banner {
