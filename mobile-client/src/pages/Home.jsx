@@ -46,6 +46,7 @@ export default function Home() {
   const [priceFilter, setPriceFilter] = useState('all');
   const [tags, setTags] = useState([]);
   const [calendarVisible, setCalendarVisible] = useState(false);
+  const [stayMode, setStayMode] = useState('overnight');
   const [checkIn, setCheckIn] = useState(null);
   const [checkOut, setCheckOut] = useState(null);
   const [provincePickerVisible, setProvincePickerVisible] = useState(false);
@@ -86,6 +87,8 @@ export default function Home() {
     }));
   }
 
+  const [hourlySlot, setHourlySlot] = useState('');
+
   const handleCalendarChange = (value) => {
     if (!value || !value[0]) {
       return;
@@ -95,9 +98,31 @@ export default function Home() {
       setCheckOut(null);
       return;
     }
-    setCheckIn(value[0]);
-    setCheckOut(value[1]);
-    setCalendarVisible(false);
+    const start = value[0];
+    const end = value[1];
+    if (stayMode === 'overnight') {
+      if (start.getTime() === end.getTime()) {
+        setCheckIn(start);
+        setCheckOut(null);
+        return;
+      }
+      setCheckIn(start);
+      setCheckOut(end);
+      setCalendarVisible(false);
+      return;
+    }
+    if (stayMode === 'hourly') {
+      if (start.getTime() !== end.getTime()) {
+        Toast.show('钟点房需同日住退');
+        setCheckIn(start);
+        setCheckOut(start);
+        setCalendarVisible(false);
+        return;
+      }
+      setCheckIn(start);
+      setCheckOut(end);
+      setCalendarVisible(false);
+    }
   };
 
   const handleSearch = () => {
@@ -109,6 +134,10 @@ export default function Home() {
     if (tags.length > 0) params.set('tags', tags.join(','));
     if (checkIn) params.set('checkIn', formatDate(checkIn));
     if (checkOut) params.set('checkOut', formatDate(checkOut));
+    if (stayMode === 'hourly') {
+      params.set('stayMode', 'hourly');
+      if (hourlySlot) params.set('hourlySlot', hourlySlot);
+    }
     navigate(`/list?${params.toString()}`);
   };
 
@@ -214,7 +243,16 @@ export default function Home() {
           />
         </div>
         <div className="home-field">
-          <div className="field-label">入住与离店日期</div>
+          <div className="field-label-row">
+            <span className="field-label">入住与离店日期</span>
+            <span className="field-label-status">
+              {stayMode === 'hourly'
+                ? '钟点房'
+                : checkIn && checkOut && nights > 0
+                ? `共 ${nights} 晚`
+                : ''}
+            </span>
+          </div>
           <div
             className="date-summary"
             onClick={() => setCalendarVisible(true)}
@@ -232,9 +270,24 @@ export default function Home() {
               </span>
             </div>
           </div>
-          <div className="home-nights">
-            {nights > 0 ? `共 ${nights} 晚` : '请选择完整的入住日期'}
-          </div>
+          {stayMode === 'hourly' && (
+            <div className="hourly-slot-row">
+              <div className="hourly-slot-title">钟点房时段</div>
+              <Selector
+                options={[
+                  { label: '06:00-12:00', value: 'morning' },
+                  { label: '12:00-18:00', value: 'afternoon' },
+                  { label: '18:00-24:00', value: 'evening' },
+                ]}
+                value={hourlySlot ? [hourlySlot] : []}
+                onChange={(val) => {
+                  if (val && val[0]) {
+                    setHourlySlot(val[0]);
+                  }
+                }}
+              />
+            </div>
+          )}
         </div>
         <div className="home-field">
           <div className="field-label">筛选条件</div>
@@ -313,6 +366,36 @@ export default function Home() {
           minHeight: '60vh',
         }}
       >
+        <div className="calendar-header">
+          <div className="calendar-mode-toggle">
+            <Button
+              size="small"
+              color="primary"
+              fill={stayMode === 'overnight' ? 'solid' : 'outline'}
+              onClick={() => {
+                setStayMode('overnight');
+                setCheckIn(null);
+                setCheckOut(null);
+                setHourlySlot('');
+              }}
+            >
+              过夜
+            </Button>
+            <Button
+              size="small"
+              color="primary"
+              fill={stayMode === 'hourly' ? 'solid' : 'outline'}
+              onClick={() => {
+                setStayMode('hourly');
+                setCheckIn(null);
+                setCheckOut(null);
+                setHourlySlot('');
+              }}
+            >
+              钟点房（同日住退）
+            </Button>
+          </div>
+        </div>
         <Calendar
           selectionMode="range"
           defaultValue={

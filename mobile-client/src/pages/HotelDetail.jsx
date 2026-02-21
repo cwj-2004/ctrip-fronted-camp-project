@@ -160,9 +160,19 @@ export default function HotelDetail() {
                   <div className="room-info">
                     <div className="room-type">
                       {room.name || room.type}
+                      {room.isHourly && (
+                        <span className="room-tag-hourly">钟点房</span>
+                      )}
                     </div>
+                    {room.roomType && (
+                      <div className="room-meta">
+                        房型类型：{room.roomType}
+                      </div>
+                    )}
                   </div>
-                  <div className="room-price">¥{room.price}/晚</div>
+                  <div className="room-price">
+                    ¥{room.price}/{room.isHourly ? '次' : '晚'}
+                  </div>
                 </div>
               ))}
             </div>
