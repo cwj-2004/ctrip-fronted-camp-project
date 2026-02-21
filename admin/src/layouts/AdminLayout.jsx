@@ -1,9 +1,10 @@
-	import { Layout, Menu } from 'antd';
+	import { Layout, Menu, Button, message } from 'antd'; // 1. 引入 Button 和 message
 	import { Outlet, useNavigate } from 'react-router-dom';
 	import {
-	  HomeOutlined, // 修正：使用 HomeOutlined
+	  HomeOutlined,
 	  FileAddOutlined,
 	  CheckCircleOutlined,
+	  LogoutOutlined, // 引入退出图标
 	} from '@ant-design/icons';
 	const { Header, Sider, Content } = Layout;
 	const AdminLayout = () => {
@@ -14,7 +15,7 @@
 	  if (userStr) {
 	    try {
 	      const userObj = JSON.parse(userStr);
-	      userRole = userObj.role; // 获取角色：'merchant' 或 'admin'
+	      userRole = userObj.role;
 	    } catch (e) {
 	      console.error('解析用户信息失败', e);
 	    }
@@ -23,7 +24,7 @@
 	  let menuItems = [
 	    {
 	      key: '/admin/dashboard',
-	      icon: <HomeOutlined />, // 修正：使用 HomeOutlined
+	      icon: <HomeOutlined />,
 	      label: '系统首页',
 	    },
 	  ];
@@ -44,6 +45,12 @@
 	  const handleMenuClick = (e) => {
 	    navigate(e.key);
 	  };
+	  // 4. 新增：退出登录逻辑
+	  const handleLogout = () => {
+	    localStorage.removeItem('currentUser'); // 清除登录状态
+	    message.success('退出成功，请重新登录！');
+	    navigate('/login'); // 跳转回登录页
+	  };
 	  return (
 	    <Layout style={{ minHeight: '100vh' }}>
 	      <Sider width={200} style={{ background: '#001529' }}>
@@ -58,9 +65,17 @@
 	      </Sider>
 	      <Layout>
 	        <Header style={{ padding: '0 20px', background: '#fff', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-	           <span style={{ marginRight: 10 }}>
+	           <span style={{ marginRight: 20 }}>
 	             当前角色：{userRole === 'merchant' ? '商户' : '管理员'}
 	           </span>
+	           {/* 新增：退出按钮 */}
+	           <Button 
+	             type="link" 
+	             icon={<LogoutOutlined />} 
+	             onClick={handleLogout}
+	           >
+	             退出登录
+	           </Button>
 	        </Header>
 	        <Content style={{ margin: '24px 16px', background: '#fff', padding: 24, minHeight: 280 }}>
 	          <Outlet />
