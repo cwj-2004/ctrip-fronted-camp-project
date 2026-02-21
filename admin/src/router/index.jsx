@@ -2,6 +2,7 @@
 	import Login from '../pages/Login';
 	import AdminLayout from '../layouts/AdminLayout';
 	import Dashboard from '../pages/Dashboard';
+	import AddHotel from '../pages/AddHotel'; // 1. 引入新组件 AddHotel
 	const router = createBrowserRouter([
 	  {
 	    path: '/',
@@ -21,10 +22,10 @@
 	        path: 'dashboard',
 	        element: <Dashboard />,
 	      },
-	      // 预留：商户录入页
+	      // 子路由：商户录入页（已修改）
 	      {
 	        path: 'add',
-	        element: <Dashboard />, // 暂时先用首页占位
+	        element: <AddHotel />, // 2. 这里改为 AddHotel 组件
 	      },
 	      // 预留：管理员审核页
 	      {
