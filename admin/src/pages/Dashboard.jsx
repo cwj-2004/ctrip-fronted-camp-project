@@ -1,25 +1,25 @@
-	import { Table, Button, Space, Tag, message, Popconfirm, Card } from 'antd';
+	import { Table, Button, Space, Tag, message, Popconfirm, Card, Modal, Input, Form } from 'antd';
 	import { useEffect, useState, useCallback } from 'react';
 	import { useNavigate } from 'react-router-dom';
 	const Dashboard = () => {
 	  const [hotels, setHotels] = useState([]);
 	  const [loading, setLoading] = useState(true);
+	  const [isModalVisible, setIsModalVisible] = useState(false); // 驳回弹窗
+	  const [currentRejectId, setCurrentRejectId] = useState(null);
+	  const [form] = Form.useForm();
 	  const navigate = useNavigate();
-	  // 【关键修复】使用 useState 保存用户信息，确保稳定性
-	  // 这样 currentUser 只会在组件第一次加载时解析一次，不会导致无限循环
 	  const [currentUser] = useState(() => {
 	    const userStr = window.sessionStorage.getItem('user');
 	    if (userStr) {
 	      try {
 	        return JSON.parse(userStr);
 	      } catch (e) {
-	        console.error('解析用户失败', e);
+	        console.error('解析用户信息失败:', e); // 修复：打印错误信息
 	        return null;
 	      }
 	    }
 	    return null;
 	  });
-	  // 获取酒店列表
 	  const fetchHotels = useCallback(async () => {
 	    if (!currentUser) return;
 	    setLoading(true);
@@ -32,7 +32,7 @@
 	        setHotels(data);
 	      }
 	    } catch (error) {
-	      console.error('获取列表失败:', error);
+	      console.error('获取酒店列表失败:', error); // 修复：打印错误信息
 	      message.error('获取酒店列表失败');
 	    } finally {
 	      setLoading(false);
@@ -41,64 +41,60 @@
 	  useEffect(() => {
 	    fetchHotels();
 	  }, [fetchHotels]);
-	  // --- 操作函数 (保持不变) ---
+	  // --- 管理员操作逻辑 ---
+	  // 通过审核
 	  const handleApprove = async (id) => {
-	    try {
-	      await fetch(`http://localhost:3001/hotels/${id}`, {
-	        method: 'PATCH',
-	        headers: { 'Content-Type': 'application/json' },
-	        body: JSON.stringify({ status: 'published' }),
-	      });
-	      message.success('审核通过，已发布');
-	      fetchHotels();
-	    } catch (error) {
-	      console.error('审核操作失败:', error);
-	      message.error('操作失败');
-	    }
+	    await fetch(`http://localhost:3001/hotels/${id}`, {
+	      method: 'PATCH',
+	      headers: { 'Content-Type': 'application/json' },
+	      body: JSON.stringify({ status: 'published' }),
+	    });
+	    message.success('审核通过，已发布');
+	    fetchHotels();
 	  };
-	  const handleReject = async (id) => {
+	  // 打开驳回弹窗
+	  const showRejectModal = (id) => {
+	    setCurrentRejectId(id);
+	    setIsModalVisible(true);
+	  };
+	  // 确认驳回
+	  const handleRejectConfirm = async () => {
 	    try {
-	      await fetch(`http://localhost:3001/hotels/${id}`, {
+	      const values = await form.validateFields();
+	      await fetch(`http://localhost:3001/hotels/${currentRejectId}`, {
 	        method: 'PATCH',
 	        headers: { 'Content-Type': 'application/json' },
-	        body: JSON.stringify({ status: 'rejected', rejectReason: '信息不符或资料不全' }),
+	        body: JSON.stringify({ status: 'rejected', rejectReason: values.reason }),
 	      });
 	      message.warning('已驳回申请');
+	      setIsModalVisible(false);
+	      form.resetFields();
 	      fetchHotels();
 	    } catch (error) {
-	      console.error('驳回操作失败:', error);
-	      message.error('操作失败');
+	      console.error('Validation failed:', error);
 	    }
 	  };
+	  // 下线
 	  const handleOffline = async (id) => {
-	    try {
-	      await fetch(`http://localhost:3001/hotels/${id}`, {
-	        method: 'PATCH',
-	        headers: { 'Content-Type': 'application/json' },
-	        body: JSON.stringify({ status: 'offline' }),
-	      });
-	      message.info('酒店已下线');
-	      fetchHotels();
-	    } catch (error) {
-	      console.error('下线操作失败:', error);
-	      message.error('操作失败');
-	    }
+	    await fetch(`http://localhost:3001/hotels/${id}`, {
+	      method: 'PATCH',
+	      headers: { 'Content-Type': 'application/json' },
+	      body: JSON.stringify({ status: 'offline' }),
+	    });
+	    message.info('酒店已下线');
+	    fetchHotels();
 	  };
+	  // 恢复上线
 	  const handleOnline = async (id) => {
-	    try {
-	      await fetch(`http://localhost:3001/hotels/${id}`, {
-	        method: 'PATCH',
-	        headers: { 'Content-Type': 'application/json' },
-	        body: JSON.stringify({ status: 'published' }),
-	      });
-	      message.success('酒店已恢复上线');
-	      fetchHotels();
-	    } catch (error) {
-	      console.error('恢复上线操作失败:', error);
-	      message.error('操作失败');
-	    }
+	    await fetch(`http://localhost:3001/hotels/${id}`, {
+	      method: 'PATCH',
+	      headers: { 'Content-Type': 'application/json' },
+	      body: JSON.stringify({ status: 'published' }),
+	    });
+	    message.success('酒店已恢复上线');
+	    fetchHotels();
 	  };
-	  // 表格列定义
+	  // --- 表格列定义 ---
 	  const columns = [
 	    {
 	      title: '酒店名称',
@@ -110,16 +106,25 @@
 	      title: '创建者',
 	      dataIndex: 'createdBy',
 	      key: 'createdBy',
-	      render: (text) => text || '未知',
 	    },
 	    {
 	      title: '状态',
 	      dataIndex: 'status',
 	      key: 'status',
-	      render: (status) => {
+	      render: (status, record) => {
 	        const colorMap = { published: 'green', pending: 'orange', rejected: 'red', offline: 'default' };
 	        const textMap = { published: '已发布', pending: '待审核', rejected: '已驳回', offline: '已下线' };
-	        return <Tag color={colorMap[status]}>{textMap[status]}</Tag>;
+	        // 如果是驳回状态，需要在Tag下方显示原因
+	        return (
+	          <div>
+	            <Tag color={colorMap[status]}>{textMap[status]}</Tag>
+	            {status === 'rejected' && record.rejectReason && (
+	              <div style={{ color: 'red', fontSize: 12, marginTop: 4 }}>
+	                原因：{record.rejectReason}
+	              </div>
+	            )}
+	          </div>
+	        );
 	      },
 	    },
 	    {
@@ -132,20 +137,28 @@
 	        const isAdmin = currentUser.role === 'admin';
 	        return (
 	          <Space size="small" wrap>
-	            <Button type="link" size="small" onClick={() => navigate(`/admin/edit/${record.id}`)}>编辑</Button>
-	            {isMerchant && record.status === 'rejected' && (
-	              <span style={{ color: 'red', fontSize: 12 }}>原因: {record.rejectReason || '无'}</span>
+	            {/* 商户：只有待审核、已驳回、已下线(暂不允许改)时可以编辑 */}
+	            {isMerchant && (record.status === 'pending' || record.status === 'rejected') && (
+	              <Button type="link" size="small" onClick={() => navigate(`/admin/edit/${record.id}`)}>
+	                编辑
+	              </Button>
 	            )}
+	            {/* 商户：查看驳回原因的提示（已在状态列显示，此处可作为补充按钮） */}
+	            {isMerchant && record.status === 'rejected' && (
+	               <span style={{ color: 'red', fontSize: 12 }}>请修改后重新提交</span>
+	            )}
+	            {/* 管理员：审核操作 */}
 	            {isAdmin && record.status === 'pending' && (
 	              <>
 	                <Popconfirm title="确定通过审核吗？" onConfirm={() => handleApprove(record.id)}>
 	                  <Button type="link" size="small" style={{ color: 'green' }}>通过</Button>
 	                </Popconfirm>
-	                <Popconfirm title="确定驳回吗？" onConfirm={() => handleReject(record.id)}>
-	                  <Button type="link" size="small" danger>驳回</Button>
-	                </Popconfirm>
+	                <Button type="link" size="small" danger onClick={() => showRejectModal(record.id)}>
+	                  驳回
+	                </Button>
 	              </>
 	            )}
+	            {/* 管理员：上下线操作 */}
 	            {isAdmin && record.status === 'published' && (
 	              <Popconfirm title="确定下线该酒店吗？" onConfirm={() => handleOffline(record.id)}>
 	                <Button type="link" size="small">下线</Button>
@@ -155,6 +168,12 @@
 	              <Popconfirm title="确定恢复上线吗？" onConfirm={() => handleOnline(record.id)}>
 	                <Button type="link" size="small" style={{ color: 'green' }}>恢复上线</Button>
 	              </Popconfirm>
+	            )}
+	            {/* 管理员：查看已驳回项 */}
+	            {isAdmin && record.status === 'rejected' && (
+	               <Button type="link" size="small" onClick={() => navigate(`/admin/edit/${record.id}`)}>
+	                 查看详情
+	               </Button>
 	            )}
 	          </Space>
 	        );
@@ -173,8 +192,32 @@
 	        )}
 	      </div>
 	      <Card>
-	        <Table dataSource={hotels} columns={columns} rowKey="id" loading={loading} pagination={{ pageSize: 10 }} />
+	        <Table 
+	          dataSource={hotels} 
+	          columns={columns} 
+	          rowKey="id" 
+	          loading={loading} 
+	          pagination={{ pageSize: 10 }} 
+	        />
 	      </Card>
+	      {/* 驳回原因弹窗 */}
+	      <Modal 
+	        title="驳回原因" 
+	        visible={isModalVisible} 
+	        onOk={handleRejectConfirm} 
+	        onCancel={() => setIsModalVisible(false)}
+	        okText="确认驳回"
+	      >
+	        <Form form={form} layout="vertical">
+	          <Form.Item 
+	            name="reason" 
+	            label="请输入驳回理由" 
+	            rules={[{ required: true, message: '驳回理由不能为空' }]}
+	          >
+	            <Input.TextArea rows={4} placeholder="例如：资质不全、图片模糊" />
+	          </Form.Item>
+	        </Form>
+	      </Modal>
 	    </div>
 	  );
 	};

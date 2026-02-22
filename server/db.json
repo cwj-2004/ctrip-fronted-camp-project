@@ -93,7 +93,7 @@
       "star": 3,
       "basePrice": 350,
       "openDate": "2021-03-01",
-      "status": "published",
+      "status": "pending",
       "createdBy": "1",
       "tags": [
         "民宿",
@@ -203,7 +203,7 @@
           "price": 750
         }
       ],
-      "mainImage": "https://example.com/h南京.jpg"
+      "mainImage": "https://example.com/h8.jpg"
     },
     {
       "id": "9",
@@ -268,7 +268,7 @@
         "亲子"
       ],
       "mainImage": "https://bkimg.cdn.bcebos.com/smart/472309f790529822720e9fbb45866ccb0a46f21f7e3c-bkimg-process,v_1,rw_1,rh_1,pad_1,color_ffffff?x-bce-process=image/format,f_auto",
-      "status": "rejected",
+      "status": "pending",
       "createdBy": "2",
       "rooms": [
         {
@@ -281,31 +281,7 @@
           "name": "双床房",
           "price": 825
         }
-      ],
-      "rejectReason": "信息不符或资料不全"
-    },
-    {
-      "id": "c79a",
-      "name_zh": "1",
-      "name_en": "2",
-      "address": "3",
-      "star": 3,
-      "basePrice": 4,
-      "openDate": "2026-02-24",
-      "tags": [
-        "6"
-      ],
-      "mainImage": "无",
-      "status": "rejected",
-      "createdBy": "1",
-      "rooms": [
-        {
-          "id": 1771747834621,
-          "name": "1",
-          "price": 2
-        }
-      ],
-      "rejectReason": "信息不符或资料不全"
+      ]
     }
   ],
   "users": [
@@ -331,6 +307,18 @@
       "id": "5787",
       "username": "2",
       "password": "2",
+      "role": "merchant"
+    },
+    {
+      "id": "fd0c",
+      "username": "3",
+      "password": "3",
+      "role": "admin"
+    },
+    {
+      "id": "c513",
+      "username": "4",
+      "password": "4",
       "role": "merchant"
     }
   ]

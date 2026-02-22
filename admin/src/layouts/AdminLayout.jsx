@@ -1,120 +1,124 @@
-	import { Layout, Menu, Button, message } from 'antd';
+	import { Layout, Menu, Dropdown, Avatar, message, Space } from 'antd';
+	import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 	import { 
-	  HomeOutlined, 
+	  ShopOutlined, 
 	  PlusOutlined, 
 	  AuditOutlined, 
+	  UserOutlined, 
 	  LogoutOutlined,
-	  ShopOutlined // 【修复】使用 ShopOutlined 代替不存在的 HotelOutlined
+	  MenuFoldOutlined,
+	  MenuUnfoldOutlined
 	} from '@ant-design/icons';
-	import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 	import { useState } from 'react';
+	import './AdminLayout.css'; 
 	const { Header, Sider, Content } = Layout;
 	const AdminLayout = () => {
 	  const navigate = useNavigate();
 	  const location = useLocation();
-	  // 初始化状态
-	  const [userInfo, setUserInfo] = useState(() => {
-	    const userStr = window.sessionStorage.getItem('user');
-	    if (userStr) {
-	      try {
-	        return JSON.parse(userStr);
-	      } catch (e) {
-	        console.error('解析用户信息失败:', e);
-	        return null;
-	      }
-	    }
+	  const [collapsed, setCollapsed] = useState(false);
+	  // 获取用户信息
+	  const userStr = window.sessionStorage.getItem('user');
+	  const currentUser = userStr ? JSON.parse(userStr) : null;
+	  if (!currentUser) {
+	    navigate('/login');
 	    return null;
-	  });
-	  // 如果未登录，直接重定向
-	  if (!userInfo) {
-	    return <Navigate to="/login" replace />;
 	  }
-	  // 定义菜单
-	  const allMenuItems = [
-	    {
-	      key: '/admin/dashboard',
-	      icon: <HomeOutlined />,
-	      label: '系统首页',
-	      roles: ['admin', 'merchant'],
-	    },
-	    {
-	      key: '/admin/add',
-	      icon: <PlusOutlined />,
-	      label: '酒店录入',
-	      roles: ['merchant'],
-	    },
-	    {
-	      key: '/admin/audit',
-	      icon: <AuditOutlined />,
-	      label: '酒店审核',
-	      roles: ['admin'],
-	    },
-	    {
-	      key: '/admin/list',
-	      icon: <ShopOutlined />, // 【修复】这里使用 ShopOutlined
-	      label: '酒店管理',
-	      roles: ['admin'],
-	    },
-	  ];
-	  // 过滤菜单
-	  const filteredMenuItems = allMenuItems.filter(item => item.roles.includes(userInfo.role));
 	  // 退出登录
 	  const handleLogout = () => {
 	    window.sessionStorage.removeItem('user');
-	    setUserInfo(null);
 	    message.success('退出成功');
+	    navigate('/login');
+	  };
+	  // --- v5 写法：用户下拉菜单配置 ---
+	  const userMenuItems = [
+	    {
+	      key: 'info',
+	      label: `角色：${currentUser.role === 'admin' ? '管理员' : '商户'}`,
+	      disabled: true,
+	    },
+	    {
+	      type: 'divider',
+	    },
+	    {
+	      key: 'logout',
+	      icon: <LogoutOutlined />,
+	      label: '退出登录',
+	      onClick: handleLogout, // 直接在 items 中定义点击事件
+	    },
+	  ];
+	  // --- v5 写法：侧边栏菜单配置 ---
+	  const getMenuItems = () => {
+	    const merchantMenus = [
+	      {
+	        key: '/admin/dashboard',
+	        icon: <ShopOutlined />,
+	        label: '我的酒店',
+	      },
+	      {
+	        key: '/admin/add',
+	        icon: <PlusOutlined />,
+	        label: '录入新酒店',
+	      },
+	    ];
+	    const adminMenus = [
+	      {
+	        key: '/admin/dashboard',
+	        icon: <AuditOutlined />,
+	        label: '酒店审核',
+	      },
+	    ];
+	    return currentUser.role === 'admin' ? adminMenus : merchantMenus;
+	  };
+	  // 点击菜单跳转
+	  const handleMenuClick = (e) => {
+	    navigate(e.key);
 	  };
 	  return (
 	    <Layout style={{ minHeight: '100vh' }}>
-	      <Sider width={200} className="site-layout-background">
-	        <div style={{ 
-	          height: 32, 
-	          margin: 16, 
-	          background: 'rgba(255, 255, 255, 0.2)',
-	          borderRadius: 6,
-	          color: '#fff',
-	          textAlign: 'center',
-	          lineHeight: '32px',
-	          fontSize: 16
-	        }}>
-	          酒店管理系统
+	      {/* 左侧菜单栏 */}
+	      <Sider 
+	        trigger={null} 
+	        collapsible 
+	        collapsed={collapsed}
+	        breakpoint="lg"
+	        collapsedWidth="80"
+	      >
+	        <div className="logo">
+	          {collapsed ? '易宿' : '易宿后台管理'}
 	        </div>
 	        <Menu
 	          theme="dark"
 	          mode="inline"
 	          selectedKeys={[location.pathname]}
-	          items={filteredMenuItems}
-	          onClick={({ key }) => navigate(key)}
+	          onClick={handleMenuClick}
+	          items={getMenuItems()} // v5 写法
 	        />
 	      </Sider>
-	      <Layout>
-	        <Header style={{ 
-	          padding: '0 20px', 
-	          background: '#fff', 
-	          display: 'flex', 
-	          justifyContent: 'space-between', 
-	          alignItems: 'center',
-	          borderBottom: '1px solid #f0f0f0'
-	        }}>
-	          <div style={{ fontSize: 16 }}>
-	            当前角色：
-	            <span style={{ color: userInfo.role === 'admin' ? '#1890ff' : '#52c41a', fontWeight: 'bold', marginLeft: 8 }}>
-	              {userInfo.role === 'admin' ? '管理员' : '商户'}
-	            </span>
-	            <span style={{ marginLeft: 10, color: '#999' }}>
-	              (用户名: {userInfo.username})
-	            </span>
+	      <Layout className="site-layout">
+	        {/* 顶部导航栏 */}
+	        <Header className="site-layout-header" style={{ padding: 0, background: '#fff' }}>
+	          <div className="header-left">
+	            {collapsed ? (
+	              <MenuUnfoldOutlined className="trigger" onClick={() => setCollapsed(false)} />
+	            ) : (
+	              <MenuFoldOutlined className="trigger" onClick={() => setCollapsed(true)} />
+	            )}
 	          </div>
-	          <Button 
-	            type="link" 
-	            icon={<LogoutOutlined />} 
-	            onClick={handleLogout}
-	            danger
-	          >
-	            退出登录
-	          </Button>
+	          <div className="header-right">
+	            {/* v5 写法：使用 menu 属性，且 children 必须包裹在 <Space> 或 <a> 标签中 */}
+	            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+	              <Space style={{ cursor: 'pointer' }}>
+	                <Avatar 
+	                  style={{ backgroundColor: '#1890ff' }} 
+	                  icon={<UserOutlined />} 
+	                />
+	                <span style={{ fontWeight: 500 }}>{currentUser.username}</span>
+	              </Space>
+	            </Dropdown>
+	          </div>
 	        </Header>
-	        <Content style={{ margin: '16px', background: '#fff', padding: '20px', minHeight: 280 }}>
+	        {/* 主内容区域 */}
+	        <Content className="site-layout-content">
 	          <Outlet />
 	        </Content>
 	      </Layout>

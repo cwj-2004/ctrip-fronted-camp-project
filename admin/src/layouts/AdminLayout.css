@@ -1,0 +1,41 @@
+	/* src/layouts/AdminLayout.css */
+	/* 顶部触发器样式 */
+	.trigger {
+	  padding: 0 24px;
+	  font-size: 18px;
+	  line-height: 64px;
+	  cursor: pointer;
+	  transition: color 0.3s;
+	}
+	.trigger:hover {
+	  color: #1890ff;
+	}
+	/* Logo 样式 */
+	.logo {
+	  height: 64px;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  color: #fff;
+	  font-weight: bold;
+	  font-size: 18px;
+	  background: rgba(255, 255, 255, 0.2);
+	  margin-bottom: 10px;
+	  overflow: hidden;
+	  white-space: nowrap;
+	}
+	/* 主内容区域样式 */
+	.site-layout .site-layout-header {
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+	  z-index: 10;
+	}
+	.site-layout .site-layout-content {
+	  margin: 24px;
+	  padding: 24px;
+	  background: #fff;
+	  min-height: 280px; /* 这里修改为 min-height */
+	  overflow: auto;
+	}

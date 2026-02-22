@@ -1,15 +1,16 @@
 	import { useState } from 'react';
-	import { Button, Card, Form, Input, Select, message, Tabs } from 'antd';
-	import { UserOutlined, LockOutlined } from '@ant-design/icons';
+	import { Button, Card, Form, Input, Select, message, Space } from 'antd'; // 引入 Space
+	import { UserOutlined, LockOutlined, TeamOutlined, HomeOutlined } from '@ant-design/icons';
 	import { useNavigate } from 'react-router-dom';
+	import './Login.css'; // 引入美化样式
 	const { Option } = Select;
-	const { TabPane } = Tabs;
 	const Login = () => {
-	  const [activeKey, setActiveKey] = useState('login');
+	  const [isLogin, setIsLogin] = useState(true); // 用于切换登录/注册视图
 	  const [loading, setLoading] = useState(false);
 	  const navigate = useNavigate();
-	  // --- 登录逻辑 (暴力匹配版) ---
-	  const onFinishLogin = async (values) => {
+	  const [form] = Form.useForm();
+	  // --- 登录逻辑 (完全保留你原有的暴力匹配逻辑) ---
+	  const handleLogin = async (values) => {
 	    const username = values.username.trim();
 	    const password = values.password.trim();
 	    if (!username || !password) {
@@ -40,8 +41,8 @@
 	      setLoading(false);
 	    }
 	  };
-	  // --- 注册逻辑 (暴力匹配版) ---
-	  const onFinishRegister = async (values) => {
+	  // --- 注册逻辑 (完全保留你原有的查重逻辑) ---
+	  const handleRegister = async (values) => {
 	    const username = values.username.trim();
 	    const password = values.password.trim();
 	    if (!username || !password) {
@@ -73,7 +74,8 @@
 	      });
 	      if (postRes.ok) {
 	        message.success('注册成功！请登录');
-	        setActiveKey('login'); // 切回登录页
+	        setIsLogin(true); // 切回登录页
+	        form.resetFields(); // 重置表单
 	      } else {
 	        message.error('注册失败');
 	      }
@@ -84,54 +86,102 @@
 	      setLoading(false);
 	    }
 	  };
+	  // 统一提交入口
+	  const onFinish = (values) => {
+	    if (isLogin) {
+	      handleLogin(values);
+	    } else {
+	      handleRegister(values);
+	    }
+	  };
 	  return (
-	    <div style={{ 
-	      height: '100vh', 
-	      display: 'flex', 
-	      justifyContent: 'center', 
-	      alignItems: 'center',
-	      background: '#f0f2f5'
-	    }}>
-	      <Card style={{ width: 400, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-	        <h2 style={{ textAlign: 'center', marginBottom: 20 }}>酒店管理系统</h2>
-	        <Tabs activeKey={activeKey} onChange={setActiveKey} centered>
-	          <TabPane tab="登录" key="login">
-	            <Form onFinish={onFinishLogin}>
-	              <Form.Item name="username" rules={[{ required: true, message: '请输入用户名' }]}>
-	                <Input prefix={<UserOutlined />} placeholder="用户名" />
-	              </Form.Item>
-	              <Form.Item name="password" rules={[{ required: true, message: '请输入密码' }]}>
-	                <Input.Password prefix={<LockOutlined />} placeholder="密码" />
-	              </Form.Item>
-	              <Form.Item>
-	                <Button type="primary" htmlType="submit" loading={loading} block>
-	                  登录
-	                </Button>
-	              </Form.Item>
-	            </Form>
-	          </TabPane>
-	          <TabPane tab="注册" key="register">
-	            <Form onFinish={onFinishRegister}>
-	              <Form.Item name="username" rules={[{ required: true, message: '请输入用户名' }]}>
-	                <Input prefix={<UserOutlined />} placeholder="用户名" />
-	              </Form.Item>
-	              <Form.Item name="password" rules={[{ required: true, message: '请输入密码' }]}>
-	                <Input.Password prefix={<LockOutlined />} placeholder="密码" />
-	              </Form.Item>
-	              <Form.Item name="role" rules={[{ required: true, message: '请选择角色' }]}>
-	                <Select placeholder="选择注册身份">
-	                  <Option value="merchant">我是商户</Option>
-	                  <Option value="admin">我是管理员</Option>
-	                </Select>
-	              </Form.Item>
-	              <Form.Item>
-	                <Button type="primary" htmlType="submit" loading={loading} block>
-	                  注册
-	                </Button>
-	              </Form.Item>
-	            </Form>
-	          </TabPane>
-	        </Tabs>
+	    <div className="login-container">
+	      <Card className="login-card">
+	        {/* Logo 区域 */}
+	        <div className="login-logo">
+	          <HomeOutlined className="icon" />
+	          <h1>易宿酒店管理系统</h1>
+	        </div>
+	        {/* 表单区域 */}
+	        <Form
+	          form={form}
+	          layout="vertical"
+	          onFinish={onFinish}
+	          initialValues={{ role: 'merchant' }}
+	        >
+	          {/* 用户名 */}
+	          <Form.Item 
+	            name="username" 
+	            rules={[{ required: true, message: '请输入用户名' }]}
+	          >
+	            <Input 
+	              size="large" 
+	              prefix={<UserOutlined style={{ color: '#aaa' }} />} 
+	              placeholder="用户名" 
+	            />
+	          </Form.Item>
+	          {/* 密码 */}
+	          <Form.Item 
+	            name="password" 
+	            rules={[{ required: true, message: '请输入密码' }]}
+	          >
+	            <Input.Password 
+	              size="large" 
+	              prefix={<LockOutlined style={{ color: '#aaa' }} />} 
+	              placeholder="密码" 
+	            />
+	          </Form.Item>
+	          {/* 注册时才显示角色选择 */}
+	          {!isLogin && (
+	            <Form.Item 
+	              name="role" 
+	              label="选择角色"
+	              rules={[{ required: true, message: '请选择角色' }]}
+	            >
+	              <Select 
+	                size="large" 
+	                placeholder="请选择您的身份"
+	              >
+	                <Option value="merchant">
+	                  <Space><TeamOutlined /> 商户</Space>
+	                </Option>
+	                <Option value="admin">
+	                  <Space><TeamOutlined /> 管理员</Space>
+	                </Option>
+	              </Select>
+	            </Form.Item>
+	          )}
+	          {/* 提交按钮 */}
+	          <Form.Item>
+	            <Button 
+	              className="login-button"
+	              type="primary" 
+	              htmlType="submit" 
+	              loading={loading}
+	              size="large"
+	            >
+	              {isLogin ? '登 录' : '立即注册'}
+	            </Button>
+	          </Form.Item>
+	        </Form>
+	        {/* 底部切换 */}
+	        <div className="login-footer">
+	          {isLogin ? (
+	            <span>
+	              还没有账号？ 
+	              <Button type="link" onClick={() => { setIsLogin(false); form.resetFields(); }}>
+	                立即注册
+	              </Button>
+	            </span>
+	          ) : (
+	            <span>
+	              已有账号？ 
+	              <Button type="link" onClick={() => { setIsLogin(true); form.resetFields(); }}>
+	                返回登录
+	              </Button>
+	            </span>
+	          )}
+	        </div>
 	      </Card>
 	    </div>
 	  );
