@@ -1,83 +1,120 @@
-	import { Layout, Menu, Button, message } from 'antd'; // 1. 引入 Button 和 message
-	import { Outlet, useNavigate } from 'react-router-dom';
-	import {
-	  HomeOutlined,
-	  FileAddOutlined,
-	  CheckCircleOutlined,
-	  LogoutOutlined, // 引入退出图标
+	import { Layout, Menu, Button, message } from 'antd';
+	import { 
+	  HomeOutlined, 
+	  PlusOutlined, 
+	  AuditOutlined, 
+	  LogoutOutlined,
+	  ShopOutlined // 【修复】使用 ShopOutlined 代替不存在的 HotelOutlined
 	} from '@ant-design/icons';
+	import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
+	import { useState } from 'react';
 	const { Header, Sider, Content } = Layout;
 	const AdminLayout = () => {
 	  const navigate = useNavigate();
-	  // 1. 获取当前登录的用户信息
-	  const userStr = localStorage.getItem('currentUser');
-	  let userRole = null;
-	  if (userStr) {
-	    try {
-	      const userObj = JSON.parse(userStr);
-	      userRole = userObj.role;
-	    } catch (e) {
-	      console.error('解析用户信息失败', e);
+	  const location = useLocation();
+	  // 初始化状态
+	  const [userInfo, setUserInfo] = useState(() => {
+	    const userStr = window.sessionStorage.getItem('user');
+	    if (userStr) {
+	      try {
+	        return JSON.parse(userStr);
+	      } catch (e) {
+	        console.error('解析用户信息失败:', e);
+	        return null;
+	      }
 	    }
+	    return null;
+	  });
+	  // 如果未登录，直接重定向
+	  if (!userInfo) {
+	    return <Navigate to="/login" replace />;
 	  }
-	  // 2. 根据角色动态生成菜单
-	  let menuItems = [
+	  // 定义菜单
+	  const allMenuItems = [
 	    {
 	      key: '/admin/dashboard',
 	      icon: <HomeOutlined />,
 	      label: '系统首页',
+	      roles: ['admin', 'merchant'],
+	    },
+	    {
+	      key: '/admin/add',
+	      icon: <PlusOutlined />,
+	      label: '酒店录入',
+	      roles: ['merchant'],
+	    },
+	    {
+	      key: '/admin/audit',
+	      icon: <AuditOutlined />,
+	      label: '酒店审核',
+	      roles: ['admin'],
+	    },
+	    {
+	      key: '/admin/list',
+	      icon: <ShopOutlined />, // 【修复】这里使用 ShopOutlined
+	      label: '酒店管理',
+	      roles: ['admin'],
 	    },
 	  ];
-	  if (userRole === 'merchant') {
-	    menuItems.push({
-	      key: '/admin/add',
-	      icon: <FileAddOutlined />,
-	      label: '酒店录入',
-	    });
-	  } else if (userRole === 'admin') {
-	    menuItems.push({
-	      key: '/admin/audit',
-	      icon: <CheckCircleOutlined />,
-	      label: '酒店审核',
-	    });
-	  }
-	  // 3. 点击菜单跳转
-	  const handleMenuClick = (e) => {
-	    navigate(e.key);
-	  };
-	  // 4. 新增：退出登录逻辑
+	  // 过滤菜单
+	  const filteredMenuItems = allMenuItems.filter(item => item.roles.includes(userInfo.role));
+	  // 退出登录
 	  const handleLogout = () => {
-	    localStorage.removeItem('currentUser'); // 清除登录状态
-	    message.success('退出成功，请重新登录！');
-	    navigate('/login'); // 跳转回登录页
+	    window.sessionStorage.removeItem('user');
+	    setUserInfo(null);
+	    message.success('退出成功');
 	  };
 	  return (
 	    <Layout style={{ minHeight: '100vh' }}>
-	      <Sider width={200} style={{ background: '#001529' }}>
-	        <div className="logo" style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)' }} />
+	      <Sider width={200} className="site-layout-background">
+	        <div style={{ 
+	          height: 32, 
+	          margin: 16, 
+	          background: 'rgba(255, 255, 255, 0.2)',
+	          borderRadius: 6,
+	          color: '#fff',
+	          textAlign: 'center',
+	          lineHeight: '32px',
+	          fontSize: 16
+	        }}>
+	          酒店管理系统
+	        </div>
 	        <Menu
 	          theme="dark"
 	          mode="inline"
-	          defaultSelectedKeys={['1']}
-	          items={menuItems}
-	          onClick={handleMenuClick}
+	          selectedKeys={[location.pathname]}
+	          items={filteredMenuItems}
+	          onClick={({ key }) => navigate(key)}
 	        />
 	      </Sider>
 	      <Layout>
-	        <Header style={{ padding: '0 20px', background: '#fff', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-	           <span style={{ marginRight: 20 }}>
-	             当前角色：{userRole === 'merchant' ? '商户' : '管理员'}
-	           </span>
-	           {/* 新增：退出按钮 */}
-	           <Button 
-	             type="link" 
-	             icon={<LogoutOutlined />} 
-	             onClick={handleLogout}
-	           >
-	             退出登录
-	           </Button>
+	        <Header style={{ 
+	          padding: '0 20px', 
+	          background: '#fff', 
+	          display: 'flex', 
+	          justifyContent: 'space-between', 
+	          alignItems: 'center',
+	          borderBottom: '1px solid #f0f0f0'
+	        }}>
+	          <div style={{ fontSize: 16 }}>
+	            当前角色：
+	            <span style={{ color: userInfo.role === 'admin' ? '#1890ff' : '#52c41a', fontWeight: 'bold', marginLeft: 8 }}>
+	              {userInfo.role === 'admin' ? '管理员' : '商户'}
+	            </span>
+	            <span style={{ marginLeft: 10, color: '#999' }}>
+	              (用户名: {userInfo.username})
+	            </span>
+	          </div>
+	          <Button 
+	            type="link" 
+	            icon={<LogoutOutlined />} 
+	            onClick={handleLogout}
+	            danger
+	          >
+	            退出登录
+	          </Button>
 	        </Header>
-	        <Content style={{ margin: '24px 16px', background: '#fff', padding: 24, minHeight: 280 }}>
+	        <Content style={{ margin: '16px', background: '#fff', padding: '20px', minHeight: 280 }}>
 	          <Outlet />
 	        </Content>
 	      </Layout>

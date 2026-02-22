@@ -1,14 +1,22 @@
 	import { Form, Input, Button, InputNumber, Select, DatePicker, message, Space, Card } from 'antd';
 	import { useNavigate } from 'react-router-dom';
 	import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-	import dayjs from 'dayjs'; // 用于处理日期格式
+	import dayjs from 'dayjs';
 	const { Option } = Select;
 	const AddHotel = () => {
 	  const navigate = useNavigate();
 	  const [form] = Form.useForm();
 	  // 提交表单的逻辑
 	  const onFinish = async (values) => {
-	    // 1. 格式化数据，使其符合 db.json 的结构
+	    // 1. 获取当前登录用户信息
+	    const userStr = window.sessionStorage.getItem('user');
+	    if (!userStr) {
+	      message.error('您未登录，请先登录');
+	      navigate('/login');
+	      return;
+	    }
+	    const currentUser = JSON.parse(userStr);
+	    // 2. 组装数据，增加 createdBy 字段
 	    const hotelData = {
 	      name_zh: values.name_zh,
 	      name_en: values.name_en,
@@ -19,6 +27,7 @@
 	      tags: values.tags || [],
 	      mainImage: values.mainImage || '',
 	      status: 'pending', // 商户提交后，默认状态为 "待审核"
+	      createdBy: currentUser.username, // 【核心】标记这是谁创建的酒店
 	      rooms: values.rooms ? values.rooms.map((room, index) => ({
 	        id: Date.now() + index, // 生成一个临时ID
 	        name: room.name,
@@ -26,7 +35,7 @@
 	      })) : []
 	    };
 	    try {
-	      // 2. 发送 POST 请求到后端
+	      // 3. 发送 POST 请求到后端
 	      const response = await fetch('http://localhost:3001/hotels', {
 	        method: 'POST',
 	        headers: {
@@ -51,7 +60,7 @@
 	      <Form
 	        form={form}
 	        layout="vertical"
-	        onFinish={onFinish}
+	        onFinish={onFinish}  // 【关键修复】这里必须绑定 onFinish 函数
 	        autoComplete="off"
 	      >
 	        {/* 基础信息区 */}
