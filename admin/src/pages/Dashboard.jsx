@@ -5,17 +5,21 @@
 	  const [hotels, setHotels] = useState([]);
 	  const [loading, setLoading] = useState(true);
 	  const navigate = useNavigate();
-	  // 1. 安全获取当前登录用户信息
-	  let currentUser = null;
-	  try {
+	  // 【关键修复】使用 useState 保存用户信息，确保稳定性
+	  // 这样 currentUser 只会在组件第一次加载时解析一次，不会导致无限循环
+	  const [currentUser] = useState(() => {
 	    const userStr = window.sessionStorage.getItem('user');
 	    if (userStr) {
-	      currentUser = JSON.parse(userStr);
+	      try {
+	        return JSON.parse(userStr);
+	      } catch (e) {
+	        console.error('解析用户失败', e);
+	        return null;
+	      }
 	    }
-	  } catch (e) {
-	    console.error('Dashboard解析用户失败', e);
-	  }
-	  // 2. 获取酒店列表
+	    return null;
+	  });
+	  // 获取酒店列表
 	  const fetchHotels = useCallback(async () => {
 	    if (!currentUser) return;
 	    setLoading(true);
@@ -28,7 +32,7 @@
 	        setHotels(data);
 	      }
 	    } catch (error) {
-	      console.error('获取列表失败:', error); // 修复：使用 error
+	      console.error('获取列表失败:', error);
 	      message.error('获取酒店列表失败');
 	    } finally {
 	      setLoading(false);
@@ -37,7 +41,7 @@
 	  useEffect(() => {
 	    fetchHotels();
 	  }, [fetchHotels]);
-	  // --- 管理员操作：审核通过 ---
+	  // --- 操作函数 (保持不变) ---
 	  const handleApprove = async (id) => {
 	    try {
 	      await fetch(`http://localhost:3001/hotels/${id}`, {
@@ -48,11 +52,10 @@
 	      message.success('审核通过，已发布');
 	      fetchHotels();
 	    } catch (error) {
-	      console.error('审核操作失败:', error); // 修复：使用 error
+	      console.error('审核操作失败:', error);
 	      message.error('操作失败');
 	    }
 	  };
-	  // --- 管理员操作：审核驳回 ---
 	  const handleReject = async (id) => {
 	    try {
 	      await fetch(`http://localhost:3001/hotels/${id}`, {
@@ -63,11 +66,10 @@
 	      message.warning('已驳回申请');
 	      fetchHotels();
 	    } catch (error) {
-	      console.error('驳回操作失败:', error); // 修复：使用 error
+	      console.error('驳回操作失败:', error);
 	      message.error('操作失败');
 	    }
 	  };
-	  // --- 管理员操作：下线 ---
 	  const handleOffline = async (id) => {
 	    try {
 	      await fetch(`http://localhost:3001/hotels/${id}`, {
@@ -78,11 +80,10 @@
 	      message.info('酒店已下线');
 	      fetchHotels();
 	    } catch (error) {
-	      console.error('下线操作失败:', error); // 修复：使用 error
+	      console.error('下线操作失败:', error);
 	      message.error('操作失败');
 	    }
 	  };
-	  // --- 管理员操作：恢复上线 ---
 	  const handleOnline = async (id) => {
 	    try {
 	      await fetch(`http://localhost:3001/hotels/${id}`, {
@@ -93,11 +94,11 @@
 	      message.success('酒店已恢复上线');
 	      fetchHotels();
 	    } catch (error) {
-	      console.error('恢复上线操作失败:', error); // 修复：使用 error
+	      console.error('恢复上线操作失败:', error);
 	      message.error('操作失败');
 	    }
 	  };
-	  // 3. 定义表格列
+	  // 表格列定义
 	  const columns = [
 	    {
 	      title: '酒店名称',
@@ -116,18 +117,8 @@
 	      dataIndex: 'status',
 	      key: 'status',
 	      render: (status) => {
-	        const colorMap = {
-	          published: 'green',
-	          pending: 'orange',
-	          rejected: 'red',
-	          offline: 'default',
-	        };
-	        const textMap = {
-	          published: '已发布',
-	          pending: '待审核',
-	          rejected: '已驳回',
-	          offline: '已下线',
-	        };
+	        const colorMap = { published: 'green', pending: 'orange', rejected: 'red', offline: 'default' };
+	        const textMap = { published: '已发布', pending: '待审核', rejected: '已驳回', offline: '已下线' };
 	        return <Tag color={colorMap[status]}>{textMap[status]}</Tag>;
 	      },
 	    },
@@ -141,17 +132,9 @@
 	        const isAdmin = currentUser.role === 'admin';
 	        return (
 	          <Space size="small" wrap>
-	            <Button 
-	              type="link" 
-	              size="small"
-	              onClick={() => navigate(`/admin/edit/${record.id}`)}
-	            >
-	              编辑
-	            </Button>
+	            <Button type="link" size="small" onClick={() => navigate(`/admin/edit/${record.id}`)}>编辑</Button>
 	            {isMerchant && record.status === 'rejected' && (
-	              <span style={{ color: 'red', fontSize: 12 }}>
-	                原因: {record.rejectReason || '无'}
-	              </span>
+	              <span style={{ color: 'red', fontSize: 12 }}>原因: {record.rejectReason || '无'}</span>
 	            )}
 	            {isAdmin && record.status === 'pending' && (
 	              <>
@@ -184,23 +167,13 @@
 	  return (
 	    <div>
 	      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
-	        <h2>
-	          {currentUser.role === 'admin' ? '酒店审核管理' : '我的酒店'}
-	        </h2>
+	        <h2>{currentUser.role === 'admin' ? '酒店审核管理' : '我的酒店'}</h2>
 	        {currentUser.role === 'merchant' && (
-	          <Button type="primary" onClick={() => navigate('/admin/add')}>
-	            + 录入新酒店
-	          </Button>
+	          <Button type="primary" onClick={() => navigate('/admin/add')}>+ 录入新酒店</Button>
 	        )}
 	      </div>
 	      <Card>
-	        <Table 
-	          dataSource={hotels} 
-	          columns={columns} 
-	          rowKey="id" 
-	          loading={loading}
-	          pagination={{ pageSize: 10 }}
-	        />
+	        <Table dataSource={hotels} columns={columns} rowKey="id" loading={loading} pagination={{ pageSize: 10 }} />
 	      </Card>
 	    </div>
 	  );

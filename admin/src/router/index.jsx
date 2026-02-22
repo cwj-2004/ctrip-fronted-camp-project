@@ -2,7 +2,8 @@
 	import Login from '../pages/Login';
 	import AdminLayout from '../layouts/AdminLayout';
 	import Dashboard from '../pages/Dashboard';
-	import AddHotel from '../pages/AddHotel'; // 1. 引入新组件 AddHotel
+	import AddHotel from '../pages/AddHotel';
+	import EditHotel from '../pages/EditHotel'; // 【修改1】引入 EditHotel 组件
 	const router = createBrowserRouter([
 	  {
 	    path: '/',
@@ -22,15 +23,21 @@
 	        path: 'dashboard',
 	        element: <Dashboard />,
 	      },
-	      // 子路由：商户录入页（已修改）
+	      // 子路由：商户录入页
 	      {
 	        path: 'add',
-	        element: <AddHotel />, // 2. 这里改为 AddHotel 组件
+	        element: <AddHotel />,
 	      },
 	      // 预留：管理员审核页
 	      {
 	        path: 'audit',
 	        element: <Dashboard />, // 暂时先用首页占位
+	      },
+	      // 【修改2】新增编辑页路由
+	      // 注意：path 里的 :id 是动态参数，对应 EditHotel 组件里的 useParams()
+	      {
+	        path: 'edit/:id', 
+	        element: <EditHotel />,
 	      },
 	    ],
 	  },

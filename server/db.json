@@ -93,7 +93,7 @@
       "star": 3,
       "basePrice": 350,
       "openDate": "2021-03-01",
-      "status": "pending",
+      "status": "published",
       "createdBy": "1",
       "tags": [
         "民宿",
@@ -268,7 +268,7 @@
         "亲子"
       ],
       "mainImage": "https://bkimg.cdn.bcebos.com/smart/472309f790529822720e9fbb45866ccb0a46f21f7e3c-bkimg-process,v_1,rw_1,rh_1,pad_1,color_ffffff?x-bce-process=image/format,f_auto",
-      "status": "pending",
+      "status": "rejected",
       "createdBy": "2",
       "rooms": [
         {
@@ -281,7 +281,8 @@
           "name": "双床房",
           "price": 825
         }
-      ]
+      ],
+      "rejectReason": "信息不符或资料不全"
     },
     {
       "id": "c79a",
@@ -295,7 +296,7 @@
         "6"
       ],
       "mainImage": "无",
-      "status": "pending",
+      "status": "rejected",
       "createdBy": "1",
       "rooms": [
         {
@@ -303,7 +304,8 @@
           "name": "1",
           "price": 2
         }
-      ]
+      ],
+      "rejectReason": "信息不符或资料不全"
     }
   ],
   "users": [
