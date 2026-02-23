@@ -90,10 +90,10 @@
       "name_zh": "杭州西湖漫步民宿",
       "name_en": "West Lake Stroll Guest House",
       "address": "杭州市西湖区灵隐路",
-      "star": 3,
+      "star": 4,
       "basePrice": 350,
       "openDate": "2021-03-01",
-      "status": "pending",
+      "status": "published",
       "createdBy": "1",
       "tags": [
         "民宿",
@@ -101,12 +101,13 @@
       ],
       "rooms": [
         {
-          "id": 401,
+          "id": 1771847421172,
           "name": "温馨大床房",
           "price": 350
         }
       ],
-      "mainImage": "https://example.com/h4_banner.jpg"
+      "mainImage": "https://example.com/h4_banner.jpg",
+      "rejectReason": ""
     },
     {
       "id": "5",
@@ -144,7 +145,7 @@
       "star": 5,
       "basePrice": 1950,
       "openDate": "2020-12-28",
-      "status": "offline",
+      "status": "published",
       "createdBy": "1",
       "tags": [
         "海景",
@@ -213,7 +214,7 @@
       "star": 4,
       "basePrice": 480,
       "openDate": "2019-06-20",
-      "status": "rejected",
+      "status": "published",
       "createdBy": "shanghu1",
       "tags": [
         "近景区",
@@ -226,7 +227,8 @@
           "price": 480
         }
       ],
-      "mainImage": "https://example.com/h9.jpg"
+      "mainImage": "https://example.com/h9.jpg",
+      "rejectReason": ""
     },
     {
       "id": "10",
@@ -268,7 +270,7 @@
         "亲子"
       ],
       "mainImage": "https://bkimg.cdn.bcebos.com/smart/472309f790529822720e9fbb45866ccb0a46f21f7e3c-bkimg-process,v_1,rw_1,rh_1,pad_1,color_ffffff?x-bce-process=image/format,f_auto",
-      "status": "pending",
+      "status": "published",
       "createdBy": "2",
       "rooms": [
         {
@@ -282,6 +284,35 @@
           "price": 825
         }
       ]
+    },
+    {
+      "id": "1592",
+      "name_zh": "绍兴富悦温德姆酒店",
+      "name_en": "Wyndham Shaoxing Keqiao",
+      "address": "柯桥群贤路981号",
+      "star": 5,
+      "openDate": "2023-01-01",
+      "basePrice": 633,
+      "tags": [
+        "豪华"
+      ],
+      "surroundings": "距瓜渚湖＜100米",
+      "mainImage": "https://tse4.mm.bing.net/th/id/OIP.qdR5-9CD4WZpDwdXfQ6mogHaId?rs=1&pid=ImgDetMain&o=7&rm=3",
+      "rooms": [
+        {
+          "id": 1771854397108,
+          "name": "双床房",
+          "price": 683
+        },
+        {
+          "id": 1771854397109,
+          "name": "大床房",
+          "price": 733
+        }
+      ],
+      "status": "published",
+      "createdBy": "4",
+      "rejectReason": ""
     }
   ],
   "users": [
