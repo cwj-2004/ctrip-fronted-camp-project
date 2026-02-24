@@ -1,41 +1,98 @@
 	/* src/layouts/AdminLayout.css */
-	/* 顶部触发器样式 */
-	.trigger {
-	  padding: 0 24px;
-	  font-size: 18px;
-	  line-height: 64px;
-	  cursor: pointer;
-	  transition: color 0.3s;
+	/* === 侧边栏样式优化 === */
+	.custom-sider {
+	  box-shadow: 2px 0 8px rgba(0, 21, 41, 0.15);
+	  z-index: 20;
 	}
-	.trigger:hover {
-	  color: #1890ff;
-	}
-	/* Logo 样式 */
+	/* Logo 样式美化 */
 	.logo {
 	  height: 64px;
 	  display: flex;
 	  align-items: center;
 	  justify-content: center;
+	  padding: 10px;
+	  overflow: hidden;
+	  background: rgba(255, 255, 255, 0.1);
+	  margin-bottom: 10px;
+	  transition: all 0.3s;
+	}
+	.logo-icon {
+	  width: 40px;
+	  height: 40px;
+	  border-radius: 8px; /* 方形圆角 */
+	  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	  color: #fff;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  font-size: 20px;
+	  font-weight: bold;
+	  flex-shrink: 0;
+	}
+	.logo-text {
 	  color: #fff;
 	  font-weight: bold;
 	  font-size: 18px;
-	  background: rgba(255, 255, 255, 0.2);
-	  margin-bottom: 10px;
-	  overflow: hidden;
+	  margin-left: 12px;
 	  white-space: nowrap;
+	  opacity: 1;
+	  transition: opacity 0.3s;
 	}
-	/* 主内容区域样式 */
+	/* 侧边栏折叠时隐藏文字 */
+	.custom-sider.ant-layout-sider-collapsed .logo-text {
+	  opacity: 0;
+	  display: none;
+	}
+	/* === 顶部栏样式优化 === */
 	.site-layout .site-layout-header {
 	  display: flex;
 	  justify-content: space-between;
 	  align-items: center;
-	  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+	  background: #fff;
+	  padding: 0 24px;
+	  height: 64px;
+	  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 	  z-index: 10;
 	}
+	.trigger {
+	  padding: 0 12px;
+	  font-size: 18px;
+	  line-height: 64px;
+	  cursor: pointer;
+	  transition: color 0.3s;
+	  border-radius: 4px;
+	}
+	.trigger:hover {
+	  color: #1890ff;
+	  background: rgba(0, 0, 0, 0.025);
+	}
+	.header-left {
+	  display: flex;
+	  align-items: center;
+	}
+	.header-right {
+	  cursor: pointer;
+	}
+	.header-right .username {
+	  font-weight: 500;
+	  color: #333;
+	  margin-left: 8px;
+	}
+	/* === 主内容区域优化 === */
 	.site-layout .site-layout-content {
 	  margin: 24px;
 	  padding: 24px;
 	  background: #fff;
-	  min-height: 280px; /* 这里修改为 min-height */
+	  min-height: 280px;
+	  border-radius: 8px; /* 增加圆角 */
+	  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 轻微阴影 */
 	  overflow: auto;
+	  transition: margin 0.2s; /* 响应式过渡 */
+	}
+	/* 响应式处理：小屏幕下去掉内容区的边距 */
+	@media (max-width: 768px) {
+	  .site-layout .site-layout-content {
+	    margin: 16px;
+	    padding: 16px;
+	  }
 	}

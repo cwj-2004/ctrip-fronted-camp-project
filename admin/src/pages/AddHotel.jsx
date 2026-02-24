@@ -21,6 +21,8 @@
 	      openDate: values.openDate ? dayjs(values.openDate).format('YYYY-MM-DD') : '',
 	      status: 'pending',
 	      createdBy: currentUser.username,
+	      // 【新增】添加创建时间，用于列表展示
+	      createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
 	      rooms: values.rooms ? values.rooms.map((room, index) => ({
 	        id: Date.now() + index,
 	        name: room.name,
@@ -29,7 +31,6 @@
 	    };
 	    setLoading(true);
 	    try {
-	      // 直接使用硬编码地址
 	      const response = await fetch('http://localhost:3001/hotels', {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
@@ -43,7 +44,7 @@
 	        message.error('提交失败，请重试');
 	      }
 	    } catch (error) {
-	      console.error(error); // 【修复】打印错误信息，消除 ESLint 警告
+	      console.error(error);
 	      message.error('网络错误');
 	    } finally {
 	      setLoading(false);

@@ -91,9 +91,9 @@
       "name_en": "West Lake Stroll Guest House",
       "address": "杭州市西湖区灵隐路",
       "star": 4,
-      "basePrice": 350,
+      "basePrice": 360,
       "openDate": "2021-03-01",
-      "status": "published",
+      "status": "pending",
       "createdBy": "1",
       "tags": [
         "民宿",
@@ -101,13 +101,14 @@
       ],
       "rooms": [
         {
-          "id": 1771847421172,
+          "id": 1771927942621,
           "name": "温馨大床房",
           "price": 350
         }
       ],
       "mainImage": "https://example.com/h4_banner.jpg",
-      "rejectReason": ""
+      "rejectReason": "",
+      "createdAt": "2026-02-24 18:12:22"
     },
     {
       "id": "5",
@@ -115,9 +116,9 @@
       "name_en": "Four Seasons Hotel Guangzhou",
       "address": "广州市天河区珠江新城珠江西方路5号",
       "star": 5,
-      "basePrice": 2100,
+      "basePrice": 2000,
       "openDate": "2012-07-23",
-      "status": "published",
+      "status": "pending",
       "createdBy": "1",
       "tags": [
         "奢华",
@@ -125,17 +126,19 @@
       ],
       "rooms": [
         {
-          "id": 501,
+          "id": 1771927935720,
           "name": "尊贵大床房",
           "price": 2100
         },
         {
-          "id": 502,
+          "id": 1771927935721,
           "name": "塔景套房",
           "price": 4500
         }
       ],
-      "mainImage": "https://example.com/h5_banner.jpg"
+      "mainImage": "https://example.com/h5_banner.jpg",
+      "rejectReason": "",
+      "createdAt": "2026-02-24 18:12:15"
     },
     {
       "id": "6",
@@ -143,9 +146,9 @@
       "name_en": "Andaz Shenzhen Bay",
       "address": "深圳市南山区科苑南路2600号",
       "star": 5,
-      "basePrice": 1950,
+      "basePrice": 2050,
       "openDate": "2020-12-28",
-      "status": "published",
+      "status": "pending",
       "createdBy": "1",
       "tags": [
         "海景",
@@ -153,12 +156,14 @@
       ],
       "rooms": [
         {
-          "id": 601,
+          "id": 1771927927050,
           "name": "海景大床房",
           "price": 1950
         }
       ],
-      "mainImage": "https://example.com/h6_banner.jpg"
+      "mainImage": "https://example.com/h6_banner.jpg",
+      "rejectReason": "",
+      "createdAt": "2026-02-24 18:12:07"
     },
     {
       "id": "7",
@@ -166,9 +171,9 @@
       "name_en": "Kuanzhai Alley Boutique Hotel",
       "address": "成都市青羊区宽巷子",
       "star": 4,
-      "basePrice": 680,
+      "basePrice": 700,
       "openDate": "2015-11-11",
-      "status": "published",
+      "status": "pending",
       "createdBy": "1",
       "tags": [
         "复古",
@@ -176,12 +181,14 @@
       ],
       "rooms": [
         {
-          "id": 701,
+          "id": 1771927915798,
           "name": "雅致套房",
           "price": 680
         }
       ],
-      "mainImage": "https://example.com/h7_banner.jpg"
+      "mainImage": "https://example.com/h7_banner.jpg",
+      "rejectReason": "",
+      "createdAt": "2026-02-24 18:11:55"
     },
     {
       "id": "8",
@@ -191,7 +198,7 @@
       "star": 5,
       "basePrice": 750,
       "openDate": "1986-05-01",
-      "status": "published",
+      "status": "rejected",
       "createdBy": "1",
       "tags": [
         "老字号",
@@ -199,12 +206,14 @@
       ],
       "rooms": [
         {
-          "id": 801,
+          "id": 1771859016818,
           "name": "湖景双床房",
-          "price": 750
+          "price": 780
         }
       ],
-      "mainImage": "https://example.com/h8.jpg"
+      "mainImage": "https://example.com/h8.jpg",
+      "rejectReason": "信息需要更新",
+      "createdAt": "2026-02-23 23:03:36"
     },
     {
       "id": "9",
@@ -300,19 +309,76 @@
       "mainImage": "https://tse4.mm.bing.net/th/id/OIP.qdR5-9CD4WZpDwdXfQ6mogHaId?rs=1&pid=ImgDetMain&o=7&rm=3",
       "rooms": [
         {
-          "id": 1771854397108,
+          "id": 1771858988174,
           "name": "双床房",
-          "price": 683
+          "price": 788
         },
         {
-          "id": 1771854397109,
+          "id": 1771858988175,
           "name": "大床房",
           "price": 733
         }
       ],
-      "status": "published",
+      "status": "rejected",
       "createdBy": "4",
-      "rejectReason": ""
+      "rejectReason": "信息存在虚假",
+      "createdAt": "2026-02-23 23:03:08"
+    },
+    {
+      "id": "4525",
+      "name_zh": "苏州洲际酒店",
+      "name_en": "InterContinental Suzhou",
+      "address": "江苏苏州苏州工业园区金鸡湖畔旺墩路288号",
+      "star": 5,
+      "openDate": "2022-01-01",
+      "basePrice": 798,
+      "tags": [
+        "室内泳池"
+      ],
+      "surroundings": "地铁: 苏州当代美术馆地铁站-4口\n（560米）\n地铁: 时代广场地铁站-1口\n（660米）\n机场: 无锡硕放机场-T1航站楼\n（43.9千米）\n火车站: 苏州园区站\n（4.1千米）\n火车站: 苏州站\n（11.4千米）\n地标: 诚品书店(诚品生活苏州店)\n（192米）",
+      "mainImage": "https://img-md.veimg.cn/meadinindex/img5/2022/8/0402C1262A724F58A2F35F8E30AF59EA.jpg",
+      "rooms": [
+        {
+          "id": 1771928419801,
+          "name": "大床房",
+          "price": 798
+        },
+        {
+          "id": 1771928419802,
+          "name": "双床房",
+          "price": 1015
+        }
+      ],
+      "status": "rejected",
+      "createdBy": "1",
+      "createdAt": "2026-02-24 18:20:19",
+      "rejectReason": "信息不全",
+      "operationHistory": [
+        {
+          "time": "2026-02-24 18:48:50",
+          "operator": "admin",
+          "action": "审核通过",
+          "detail": "无"
+        },
+        {
+          "time": "2026-02-24 18:49:06",
+          "operator": "admin",
+          "action": "强制下线",
+          "detail": "无"
+        },
+        {
+          "time": "2026-02-24 18:49:10",
+          "operator": "admin",
+          "action": "审核通过",
+          "detail": "无"
+        },
+        {
+          "time": "2026-02-24 18:49:47",
+          "operator": "3",
+          "action": "驳回申请",
+          "detail": "信息不全"
+        }
+      ]
     }
   ],
   "users": [

@@ -1,17 +1,9 @@
+	// src/layouts/AdminLayout.jsx
 	import { Layout, Menu, Dropdown, Avatar, message, Space, Breadcrumb } from 'antd';
 	import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-	import { 
-	  ShopOutlined, 
-	  PlusOutlined, 
-	  AuditOutlined, 
-	  UserOutlined, 
-	  LogoutOutlined,
-	  MenuFoldOutlined,
-	  MenuUnfoldOutlined,
-	  HomeOutlined
-	} from '@ant-design/icons';
+	import { ShopOutlined, PlusOutlined, AuditOutlined, UserOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, HomeOutlined } from '@ant-design/icons';
 	import { useState } from 'react';
-	import './AdminLayout.css'; 
+	import './AdminLayout.css';
 	const { Header, Sider, Content } = Layout;
 	const AdminLayout = () => {
 	  const navigate = useNavigate();
@@ -19,7 +11,7 @@
 	  const [collapsed, setCollapsed] = useState(false);
 	  const userStr = window.sessionStorage.getItem('user');
 	  const currentUser = userStr ? JSON.parse(userStr) : null;
-	  // 路由守卫：如果没有用户信息，强制跳转登录
+	  // 路由守卫
 	  if (!currentUser) {
 	    navigate('/login');
 	    return null;
@@ -41,28 +33,39 @@
 	    ];
 	    const adminMenus = [
 	      { key: '/admin/dashboard', icon: <AuditOutlined />, label: '酒店审核' },
-	      // 管理员通常不需要主动录入，但如果有需求可以保留
 	    ];
 	    return currentUser.role === 'admin' ? adminMenus : merchantMenus;
 	  };
-	  // 面包屑映射
 	  const breadcrumbMap = {
 	    '/admin/dashboard': '管理中心',
 	    '/admin/add': '录入酒店',
 	  };
-	  // 动态处理编辑页
 	  const currentPath = location.pathname.startsWith('/admin/edit') ? '编辑酒店' : (breadcrumbMap[location.pathname] || '首页');
 	  return (
 	    <Layout style={{ minHeight: '100vh' }}>
-	      <Sider trigger={null} collapsible collapsed={collapsed} breakpoint="lg" collapsedWidth="80">
+	      <Sider 
+	        trigger={null} 
+	        collapsible 
+	        collapsed={collapsed} 
+	        breakpoint="lg" 
+	        collapsedWidth="80"
+	        className="custom-sider" // 添加自定义类名以便CSS美化
+	      >
 	        <div className="logo">
-	          {collapsed ? '易宿' : '易宿后台管理'}
+	          <div className="logo-icon">易</div>
+	          {!collapsed && <span className="logo-text">易宿后台管理</span>}
 	        </div>
-	        <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} onClick={(e) => navigate(e.key)} items={getMenuItems()} />
+	        <Menu 
+	          theme="dark" 
+	          mode="inline" 
+	          selectedKeys={[location.pathname]} 
+	          onClick={(e) => navigate(e.key)} 
+	          items={getMenuItems()} 
+	        />
 	      </Sider>
 	      <Layout className="site-layout">
-	        <Header className="site-layout-header" style={{ padding: 0, background: '#fff' }}>
-	          <div className="header-left" style={{ display: 'flex', alignItems: 'center' }}>
+	        <Header className="site-layout-header">
+	          <div className="header-left">
 	            {collapsed ? (
 	              <MenuUnfoldOutlined className="trigger" onClick={() => setCollapsed(false)} />
 	            ) : (
@@ -77,7 +80,7 @@
 	            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
 	              <Space style={{ cursor: 'pointer' }}>
 	                <Avatar style={{ backgroundColor: '#1890ff' }} icon={<UserOutlined />} />
-	                <span style={{ fontWeight: 500 }}>{currentUser.username}</span>
+	                <span className="username">{currentUser.username}</span>
 	              </Space>
 	            </Dropdown>
 	          </div>
