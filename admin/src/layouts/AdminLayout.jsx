@@ -1,7 +1,10 @@
 	// src/layouts/AdminLayout.jsx
 	import { Layout, Menu, Dropdown, Avatar, message, Space, Breadcrumb } from 'antd';
 	import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-	import { ShopOutlined, PlusOutlined, AuditOutlined, UserOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, HomeOutlined } from '@ant-design/icons';
+	import { 
+	  ShopOutlined, PlusOutlined, AuditOutlined, UserOutlined, 
+	  LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, HomeOutlined
+	} from '@ant-design/icons';
 	import { useState } from 'react';
 	import './AdminLayout.css';
 	const { Header, Sider, Content } = Layout;
@@ -11,7 +14,6 @@
 	  const [collapsed, setCollapsed] = useState(false);
 	  const userStr = window.sessionStorage.getItem('user');
 	  const currentUser = userStr ? JSON.parse(userStr) : null;
-	  // 路由守卫
 	  if (!currentUser) {
 	    navigate('/login');
 	    return null;
@@ -36,11 +38,10 @@
 	    ];
 	    return currentUser.role === 'admin' ? adminMenus : merchantMenus;
 	  };
-	  const breadcrumbMap = {
-	    '/admin/dashboard': '管理中心',
-	    '/admin/add': '录入酒店',
-	  };
-	  const currentPath = location.pathname.startsWith('/admin/edit') ? '编辑酒店' : (breadcrumbMap[location.pathname] || '首页');
+	  const breadcrumbItems = [
+	    { href: '/admin/dashboard', title: <><HomeOutlined /><span>首页</span></> },
+	    { title: location.pathname.startsWith('/admin/edit') ? '编辑酒店' : '管理中心' },
+	  ];
 	  return (
 	    <Layout style={{ minHeight: '100vh' }}>
 	      <Sider 
@@ -49,7 +50,7 @@
 	        collapsed={collapsed} 
 	        breakpoint="lg" 
 	        collapsedWidth="80"
-	        className="custom-sider" // 添加自定义类名以便CSS美化
+	        className="custom-sider"
 	      >
 	        <div className="logo">
 	          <div className="logo-icon">易</div>
@@ -71,10 +72,7 @@
 	            ) : (
 	              <MenuFoldOutlined className="trigger" onClick={() => setCollapsed(true)} />
 	            )}
-	            <Breadcrumb style={{ marginLeft: 20 }}>
-	              <Breadcrumb.Item><HomeOutlined /></Breadcrumb.Item>
-	              <Breadcrumb.Item>{currentPath}</Breadcrumb.Item>
-	            </Breadcrumb>
+	            <Breadcrumb style={{ marginLeft: 20 }} items={breadcrumbItems} />
 	          </div>
 	          <div className="header-right">
 	            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">

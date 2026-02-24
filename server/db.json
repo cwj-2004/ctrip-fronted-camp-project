@@ -91,9 +91,9 @@
       "name_en": "West Lake Stroll Guest House",
       "address": "杭州市西湖区灵隐路",
       "star": 4,
-      "basePrice": 360,
+      "basePrice": 365,
       "openDate": "2021-03-01",
-      "status": "pending",
+      "status": "published",
       "createdBy": "1",
       "tags": [
         "民宿",
@@ -101,14 +101,28 @@
       ],
       "rooms": [
         {
-          "id": 1771927942621,
+          "id": 1771935948058,
           "name": "温馨大床房",
           "price": 350
         }
       ],
       "mainImage": "https://example.com/h4_banner.jpg",
       "rejectReason": "",
-      "createdAt": "2026-02-24 18:12:22"
+      "createdAt": "2026-02-24 18:12:22",
+      "operationHistory": [
+        {
+          "time": "2026-02-24 20:25:28",
+          "operator": "admin",
+          "action": "驳回申请",
+          "detail": "信息不全"
+        },
+        {
+          "time": "2026-02-24 20:26:09",
+          "operator": "admin",
+          "action": "审核通过",
+          "detail": "无"
+        }
+      ]
     },
     {
       "id": "5",
@@ -118,7 +132,7 @@
       "star": 5,
       "basePrice": 2000,
       "openDate": "2012-07-23",
-      "status": "pending",
+      "status": "published",
       "createdBy": "1",
       "tags": [
         "奢华",
@@ -126,19 +140,33 @@
       ],
       "rooms": [
         {
-          "id": 1771927935720,
+          "id": 1771940221226,
           "name": "尊贵大床房",
           "price": 2100
         },
         {
-          "id": 1771927935721,
+          "id": 1771940221227,
           "name": "塔景套房",
           "price": 4500
         }
       ],
       "mainImage": "https://example.com/h5_banner.jpg",
       "rejectReason": "",
-      "createdAt": "2026-02-24 18:12:15"
+      "createdAt": "2026-02-24 18:12:15",
+      "operationHistory": [
+        {
+          "time": "2026-02-24 21:04:33",
+          "operator": "admin",
+          "action": "驳回申请",
+          "detail": "信息不全"
+        },
+        {
+          "time": "2026-02-24 21:37:59",
+          "operator": "3",
+          "action": "审核通过",
+          "detail": "无"
+        }
+      ]
     },
     {
       "id": "6",
@@ -148,7 +176,7 @@
       "star": 5,
       "basePrice": 2050,
       "openDate": "2020-12-28",
-      "status": "pending",
+      "status": "published",
       "createdBy": "1",
       "tags": [
         "海景",
@@ -156,14 +184,34 @@
       ],
       "rooms": [
         {
-          "id": 1771927927050,
+          "id": 1771942225071,
           "name": "海景大床房",
           "price": 1950
         }
       ],
       "mainImage": "https://example.com/h6_banner.jpg",
       "rejectReason": "",
-      "createdAt": "2026-02-24 18:12:07"
+      "createdAt": "2026-02-24 18:12:07",
+      "operationHistory": [
+        {
+          "time": "2026-02-24 21:21:09",
+          "operator": "admin",
+          "action": "驳回申请",
+          "detail": "信息不实"
+        },
+        {
+          "time": "2026-02-24 21:38:19",
+          "operator": "3",
+          "action": "驳回申请",
+          "detail": "检验未达标"
+        },
+        {
+          "time": "2026-02-24 22:15:33",
+          "operator": "3",
+          "action": "审核通过",
+          "detail": "无"
+        }
+      ]
     },
     {
       "id": "7",
@@ -173,7 +221,7 @@
       "star": 4,
       "basePrice": 700,
       "openDate": "2015-11-11",
-      "status": "pending",
+      "status": "published",
       "createdBy": "1",
       "tags": [
         "复古",
@@ -181,14 +229,46 @@
       ],
       "rooms": [
         {
-          "id": 1771927915798,
+          "id": 1771942227892,
           "name": "雅致套房",
           "price": 680
         }
       ],
       "mainImage": "https://example.com/h7_banner.jpg",
       "rejectReason": "",
-      "createdAt": "2026-02-24 18:11:55"
+      "createdAt": "2026-02-24 18:11:55",
+      "operationHistory": [
+        {
+          "time": "2026-02-24 21:21:22",
+          "operator": "admin",
+          "action": "驳回申请",
+          "detail": "信息更新滞后"
+        },
+        {
+          "time": "2026-02-24 21:38:36",
+          "operator": "3",
+          "action": "驳回申请",
+          "detail": "信息滞后"
+        },
+        {
+          "time": "2026-02-24 22:15:37",
+          "operator": "3",
+          "action": "审核通过",
+          "detail": "无"
+        },
+        {
+          "time": "2026-02-24 22:15:52",
+          "operator": "3",
+          "action": "强制下线",
+          "detail": "无"
+        },
+        {
+          "time": "2026-02-24 22:16:15",
+          "operator": "admin",
+          "action": "重新上线",
+          "detail": "无"
+        }
+      ]
     },
     {
       "id": "8",
@@ -198,7 +278,7 @@
       "star": 5,
       "basePrice": 750,
       "openDate": "1986-05-01",
-      "status": "rejected",
+      "status": "published",
       "createdBy": "1",
       "tags": [
         "老字号",
@@ -206,14 +286,28 @@
       ],
       "rooms": [
         {
-          "id": 1771859016818,
+          "id": 1771940235615,
           "name": "湖景双床房",
           "price": 780
         }
       ],
       "mainImage": "https://example.com/h8.jpg",
-      "rejectReason": "信息需要更新",
-      "createdAt": "2026-02-23 23:03:36"
+      "rejectReason": "",
+      "createdAt": "2026-02-23 23:03:36",
+      "operationHistory": [
+        {
+          "time": "2026-02-24 21:21:42",
+          "operator": "admin",
+          "action": "驳回申请",
+          "detail": "信息与实际情况不符"
+        },
+        {
+          "time": "2026-02-24 21:38:39",
+          "operator": "3",
+          "action": "审核通过",
+          "detail": "无"
+        }
+      ]
     },
     {
       "id": "9",
@@ -319,10 +413,18 @@
           "price": 733
         }
       ],
-      "status": "rejected",
+      "status": "published",
       "createdBy": "4",
-      "rejectReason": "信息存在虚假",
-      "createdAt": "2026-02-23 23:03:08"
+      "rejectReason": "",
+      "createdAt": "2026-02-23 23:03:08",
+      "operationHistory": [
+        {
+          "time": "2026-02-24 22:15:11",
+          "operator": "3",
+          "action": "审核通过",
+          "detail": "无"
+        }
+      ]
     },
     {
       "id": "4525",
@@ -339,20 +441,20 @@
       "mainImage": "https://img-md.veimg.cn/meadinindex/img5/2022/8/0402C1262A724F58A2F35F8E30AF59EA.jpg",
       "rooms": [
         {
-          "id": 1771928419801,
+          "id": 1771942220285,
           "name": "大床房",
           "price": 798
         },
         {
-          "id": 1771928419802,
+          "id": 1771942220286,
           "name": "双床房",
           "price": 1015
         }
       ],
-      "status": "rejected",
+      "status": "published",
       "createdBy": "1",
       "createdAt": "2026-02-24 18:20:19",
-      "rejectReason": "信息不全",
+      "rejectReason": "",
       "operationHistory": [
         {
           "time": "2026-02-24 18:48:50",
@@ -377,6 +479,62 @@
           "operator": "3",
           "action": "驳回申请",
           "detail": "信息不全"
+        },
+        {
+          "time": "2026-02-24 20:21:45",
+          "operator": "admin",
+          "action": "审核通过",
+          "detail": "无"
+        },
+        {
+          "time": "2026-02-24 21:37:41",
+          "operator": "3",
+          "action": "驳回申请",
+          "detail": "检验不合格"
+        },
+        {
+          "time": "2026-02-24 22:14:50",
+          "operator": "3",
+          "action": "审核通过",
+          "detail": "无"
+        }
+      ]
+    },
+    {
+      "id": "f927",
+      "name_zh": "郑州丹尼斯广场洲际酒店",
+      "name_en": "InterContinental",
+      "address": "河南郑州金水区北二七路西太康路交叉口向北500米",
+      "star": 5,
+      "openDate": "2023-10-20",
+      "basePrice": 955,
+      "tags": [
+        "专车接送"
+      ],
+      "surroundings": "地铁: 二七广场地铁站\n（710米）\n地铁: 人民公园地铁站\n（940米）\n机场: 郑州新郑国际机场\n（36千米）\n火车站: 郑州站\n（1.9千米）\n火车站: 南阳寨站\n（9.4千米）\n地标: 幻境空间悬空玻璃剧场\n（316米）",
+      "mainImage": "https://k.sinaimg.cn/n/sinakd20120/122/w1442h1080/20231101/16fd-6a5005db53edbdd0598d631f6f7f8bd8.jpg/w700d1q75cms.jpg",
+      "rooms": [
+        {
+          "id": 1771942416574,
+          "name": "大床房",
+          "price": 955
+        },
+        {
+          "id": 1771942416575,
+          "name": "园景房",
+          "price": 975
+        }
+      ],
+      "status": "published",
+      "createdBy": "1",
+      "createdAt": "2026-02-24 22:13:36",
+      "rejectReason": "",
+      "operationHistory": [
+        {
+          "time": "2026-02-24 22:14:37",
+          "operator": "3",
+          "action": "审核通过",
+          "detail": "无"
         }
       ]
     }
@@ -416,6 +574,12 @@
       "id": "c513",
       "username": "4",
       "password": "4",
+      "role": "merchant"
+    },
+    {
+      "id": "fda3",
+      "username": "5",
+      "password": "5",
       "role": "merchant"
     }
   ]

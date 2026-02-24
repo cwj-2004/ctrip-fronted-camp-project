@@ -61,6 +61,7 @@
 	  cursor: pointer;
 	  transition: color 0.3s;
 	  border-radius: 4px;
+	  color: #666; /* 确保折叠图标也是深色 */
 	}
 	.trigger:hover {
 	  color: #1890ff;
@@ -70,13 +71,35 @@
 	  display: flex;
 	  align-items: center;
 	}
+	/* 【修改】Header Right：增加 Flex 布局，解决对齐问题 */
 	.header-right {
+	  display: flex;
+	  align-items: center;
+	  height: 100%;
 	  cursor: pointer;
 	}
 	.header-right .username {
 	  font-weight: 500;
 	  color: #333;
 	  margin-left: 8px;
+	}
+	/* 【新增】通知铃铛样式：解决看不见的问题 */
+	.notification-wrapper {
+	  height: 100%;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  padding: 0 12px;
+	  cursor: pointer;
+	  transition: background 0.3s;
+	  border-radius: 4px;
+	}
+	.notification-wrapper:hover {
+	  background: #f0f0f0; /* 鼠标悬停背景变灰 */
+	}
+	/* 确保面包屑文字颜色正确 */
+	.header-left .ant-breadcrumb {
+	  color: #666;
 	}
 	/* === 主内容区域优化 === */
 	.site-layout .site-layout-content {
