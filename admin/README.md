@@ -1,16 +1,50 @@
-# React + Vite
+# 易宿酒店预订平台 - 管理端
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 项目简介
+本项目是“易宿酒店预订平台”的后台管理系统，采用 React + Ant Design 构建。系统主要服务于民宿商户与平台管理员，实现了从酒店录入、审核发布到下线管理的完整业务闭环，并提供了数据可视化与操作历史追溯功能。
 
-Currently, two official plugins are available:
+## 技术栈
+- **运行环境**：Node.js
+- **前端框架**：React 18
+- **UI 组件库**：Ant Design 5
+- **路由管理**：React Router v6
+- **数据可视化**：@ant-design/plots
+- **工具库**：dayjs 
+- **后端模拟**：json-server
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 功能特性
+### 1. 用户权限体系
+	- **双角色登录**：支持“商户”和“管理员”角色切换。
+	- **路由守卫**：通过 `AdminLayout` 统一鉴权，未登录用户自动重定向至登录页。
+	- **权限视图隔离**：
+	  - 商户仅见：我的酒店、录入新酒店。
+	  - 管理员仅见：酒店审核。
+### 2. 酒店生命周期管理
+	- **状态流转**：待审核 -> 已发布 / 已驳回 -> 已下线。
+	- **智能编辑**：
+	  - 商户修改已发布的酒店后，状态自动重置为“待审核”，确保内容合规。
+	  - 商户查看“已驳回”酒店时，直接显示驳回原因，便于针对性修改。
+### 3. 审核与管理
+	- **审核操作**：管理员可执行“通过”、“驳回（需填写理由）”、“强制下线”操作。
+	- **操作日志**：每次状态变更均记录操作人、时间、动作及详情（`operationHistory`），在详情页以时间轴形式展示，实现全流程追溯。
+### 4. 数据可视化与交互
+	- **统计看板**：动态展示待审核、已发布、已驳回等状态的数量统计。
+	- **图表分析**：集成 @ant-design/plots 饼图，直观展示酒店状态分布。
+	- **高级筛选**：支持按状态、星级、创建者及关键词进行多维度检索。
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 项目主要结构
+	```text
+	src/
+	├── config.js           # 全局配置
+	├── App.jsx             # 根路由配置
+	├── main.jsx            # 入口文件
+	├── index.css           # 全局样式
+	├── layouts/
+	│   └── AdminLayout.jsx # 后台布局
+	├── pages/
+	│   ├── Login.jsx       # 登录/注册页
+	│   ├── Dashboard.jsx   # 首页仪表盘
+	│   ├── AddHotel.jsx    # 录入新酒店
+	│   └── EditHotel.jsx   # 编辑/审核详情页
+	└── components/
+	    └── HotelForm.jsx   # 酒店表单复用组件
