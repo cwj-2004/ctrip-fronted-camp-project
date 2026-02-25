@@ -1,4 +1,5 @@
 	// src/layouts/AdminLayout.jsx
+	// 后台管理布局组件：包含侧边栏导航、顶部Header及权限验证
 	import { Layout, Menu, Dropdown, Avatar, message, Space, Breadcrumb } from 'antd';
 	import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 	import { 
@@ -12,12 +13,15 @@
 	  const navigate = useNavigate();
 	  const location = useLocation();
 	  const [collapsed, setCollapsed] = useState(false);
+	  // 初始化用户信息
 	  const userStr = window.sessionStorage.getItem('user');
 	  const currentUser = userStr ? JSON.parse(userStr) : null;
+	  // 路由守卫：未登录则跳转
 	  if (!currentUser) {
 	    navigate('/login');
 	    return null;
 	  }
+	  // 退出登录
 	  const handleLogout = () => {
 	    window.sessionStorage.removeItem('user');
 	    message.success('退出成功');
@@ -28,6 +32,7 @@
 	    { type: 'divider' },
 	    { key: 'logout', icon: <LogoutOutlined />, label: '退出登录', onClick: handleLogout },
 	  ];
+	  // 根据角色生成菜单
 	  const getMenuItems = () => {
 	    const merchantMenus = [
 	      { key: '/admin/dashboard', icon: <ShopOutlined />, label: '我的酒店' },

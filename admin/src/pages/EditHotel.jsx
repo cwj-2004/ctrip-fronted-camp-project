@@ -1,10 +1,12 @@
 	// src/pages/EditHotel.jsx
+	// 酒店编辑与审核页面：商户编辑信息，管理员进行审核操作
 	import { useEffect, useState } from 'react';
 	import { useParams, useNavigate } from 'react-router-dom';
-	import { Card, Divider, Alert, Space, Button, Input, message, Descriptions, Image, Tag, Form, Timeline, Empty } from 'antd'; // 引入 Timeline
+	import { Card, Divider, Alert, Space, Button, Input, message, Descriptions, Image, Tag, Form, Timeline, Empty } from 'antd';
 	import { ArrowLeftOutlined, ClockCircleOutlined } from '@ant-design/icons';
 	import HotelForm from '../components/HotelForm';
 	import dayjs from 'dayjs';
+	import { API_BASE_URL } from '../config'; 
 	const EditHotel = () => {
 	  const { id } = useParams();
 	  const navigate = useNavigate();
@@ -15,10 +17,11 @@
 	  const userStr = window.sessionStorage.getItem('user');
 	  const currentUser = userStr ? JSON.parse(userStr) : null;
 	  const isAdmin = currentUser?.role === 'admin';
+	  // 获取酒店详情
 	  useEffect(() => {
 	    const fetchDetail = async () => {
 	      try {
-	        const res = await fetch(`http://localhost:3001/hotels/${id}`);
+	        const res = await fetch(`${API_BASE_URL}/hotels/${id}`);
 	        const data = await res.json();
 	        if (data.openDate) data.openDate = dayjs(data.openDate);
 	        form.setFieldsValue(data);
@@ -32,7 +35,7 @@
 	    };
 	    fetchDetail();
 	  }, [id, form]);
-	  // 商户提交修改 (逻辑不变，但清空操作历史不是必须的，这里保持原样)
+	  // 商户提交修改
 	  const onFinish = async (values) => {
 	    setSubmitting(true);
 	    const finalCreatedAt = hotelData.createdAt || dayjs().format('YYYY-MM-DD HH:mm:ss');
@@ -49,7 +52,7 @@
 	      createdAt: finalCreatedAt
 	    };
 	    try {
-	      const res = await fetch(`http://localhost:3001/hotels/${id}`, {
+	      const res = await fetch(`${API_BASE_URL}/hotels/${id}`, {
 	        method: 'PATCH',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(submitData),
@@ -65,9 +68,8 @@
 	      setSubmitting(false);
 	    }
 	  };
-	  // 【修改】管理员状态切换 - 增加日志记录
+	  // 更新酒店状态
 	  const handleStatusChange = async (newStatus, reason = '') => {
-	    // 1. 构造历史记录
 	    const actionTextMap = { published: '审核通过', rejected: '驳回申请', offline: '强制下线' };
 	    const newLog = {
 	      time: dayjs().format('YYYY-MM-DD HH:mm:ss'),
@@ -77,23 +79,20 @@
 	    };
 	    const currentHistory = hotelData.operationHistory || [];
 	    const updatedHistory = [...currentHistory, newLog];
-	    // 2. 提交数据
 	    const payload = { 
 	      status: newStatus, 
 	      rejectReason: reason,
 	      operationHistory: updatedHistory 
 	    };
 	    try {
-	      const res = await fetch(`http://localhost:3001/hotels/${id}`, {
+	      const res = await fetch(`${API_BASE_URL}/hotels/${id}`, {
 	        method: 'PATCH',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(payload),
 	      });
 	      if (res.ok) {
 	        message.success('状态已更新');
-	        // 更新本地状态，无需刷新页面即可看到新日志
 	        setHotelData({ ...hotelData, status: newStatus, operationHistory: updatedHistory });
-	        // navigate('/admin/dashboard'); // 可选：操作后留在当前页查看日志，或跳转回列表
 	      }
 	    } catch (error) {
 	      console.error(error);
@@ -117,7 +116,14 @@
 	      >
 	        {hotelData && (
 	          <>
-	            <Alert message={`当前状态: ${statusMap[hotelData.status]}`} type={hotelData.status === 'published' ? 'success' : hotelData.status === 'rejected' ? 'error' : 'warning'} style={{ marginBottom: 20 }} />
+	            {/* 状态提示 */}
+	            <Alert 
+	              title={`当前状态: ${statusMap[hotelData.status]}`} 
+	              type={hotelData.status === 'published' ? 'success' : hotelData.status === 'rejected' ? 'error' : 'warning'} 
+	              style={{ marginBottom: 20 }} 
+	              showIcon
+	            />
+	            {/* 操作面板 */}
 	            <Card size="small" title="操作面板" style={{ marginBottom: 20, background: '#fafafa' }}>
 	              <Space direction="vertical" style={{ width: '100%' }}>
 	                <Button type="primary" onClick={() => handleStatusChange('published')} disabled={hotelData.status === 'published'}>审核通过并发布</Button>
@@ -137,15 +143,14 @@
 	              <Descriptions.Item label="主图" span={2}>{hotelData.mainImage ? <Image width={200} src={hotelData.mainImage} /> : '暂无'}</Descriptions.Item>
 	              <Descriptions.Item label="房型信息" span={2}>{hotelData.rooms?.map(r => <Tag key={r.id}>{r.name}: ¥{r.price}</Tag>)}</Descriptions.Item>
 	            </Descriptions>
-	            {/* 【新增】操作历史记录展示 */}
 	            <Divider>操作历史记录</Divider>
-	            <Card bordered={false} style={{ background: '#fafafa', maxHeight: 400, overflow: 'auto' }}>
+	            <Card variant="borderless" style={{ background: '#fafafa', maxHeight: 400, overflow: 'auto' }}>
 	              {hotelData.operationHistory && hotelData.operationHistory.length > 0 ? (
 	                <Timeline
-	                  mode="left"
+	                  mode="start"
 	                  items={hotelData.operationHistory.map(log => ({
 	                    color: log.action.includes('通过') ? 'green' : log.action.includes('驳回') ? 'red' : 'blue',
-	                    children: (
+	                    content: (
 	                      <>
 	                        <p style={{ fontWeight: 'bold', marginBottom: 4 }}>
 	                          {log.action} <Tag color="default">{log.operator}</Tag>

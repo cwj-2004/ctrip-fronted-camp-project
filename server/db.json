@@ -93,7 +93,7 @@
       "star": 4,
       "basePrice": 365,
       "openDate": "2021-03-01",
-      "status": "published",
+      "status": "rejected",
       "createdBy": "1",
       "tags": [
         "民宿",
@@ -101,13 +101,13 @@
       ],
       "rooms": [
         {
-          "id": 1771935948058,
+          "id": 1771946149306,
           "name": "温馨大床房",
           "price": 350
         }
       ],
       "mainImage": "https://example.com/h4_banner.jpg",
-      "rejectReason": "",
+      "rejectReason": "信息不实",
       "createdAt": "2026-02-24 18:12:22",
       "operationHistory": [
         {
@@ -121,6 +121,12 @@
           "operator": "admin",
           "action": "审核通过",
           "detail": "无"
+        },
+        {
+          "time": "2026-02-25 14:18:17",
+          "operator": "admin",
+          "action": "驳回申请",
+          "detail": "信息不实"
         }
       ]
     },
@@ -132,7 +138,7 @@
       "star": 5,
       "basePrice": 2000,
       "openDate": "2012-07-23",
-      "status": "published",
+      "status": "pending",
       "createdBy": "1",
       "tags": [
         "奢华",
@@ -140,12 +146,12 @@
       ],
       "rooms": [
         {
-          "id": 1771940221226,
+          "id": 1771946152829,
           "name": "尊贵大床房",
           "price": 2100
         },
         {
-          "id": 1771940221227,
+          "id": 1771946152830,
           "name": "塔景套房",
           "price": 4500
         }
@@ -176,7 +182,7 @@
       "star": 5,
       "basePrice": 2050,
       "openDate": "2020-12-28",
-      "status": "published",
+      "status": "pending",
       "createdBy": "1",
       "tags": [
         "海景",
@@ -184,7 +190,7 @@
       ],
       "rooms": [
         {
-          "id": 1771942225071,
+          "id": 1771946155357,
           "name": "海景大床房",
           "price": 1950
         }
@@ -221,7 +227,7 @@
       "star": 4,
       "basePrice": 700,
       "openDate": "2015-11-11",
-      "status": "published",
+      "status": "pending",
       "createdBy": "1",
       "tags": [
         "复古",
@@ -229,7 +235,7 @@
       ],
       "rooms": [
         {
-          "id": 1771942227892,
+          "id": 1771946157730,
           "name": "雅致套房",
           "price": 680
         }
@@ -278,7 +284,7 @@
       "star": 5,
       "basePrice": 750,
       "openDate": "1986-05-01",
-      "status": "published",
+      "status": "pending",
       "createdBy": "1",
       "tags": [
         "老字号",
@@ -286,7 +292,7 @@
       ],
       "rooms": [
         {
-          "id": 1771940235615,
+          "id": 1771946160164,
           "name": "湖景双床房",
           "price": 780
         }
@@ -373,20 +379,36 @@
         "亲子"
       ],
       "mainImage": "https://bkimg.cdn.bcebos.com/smart/472309f790529822720e9fbb45866ccb0a46f21f7e3c-bkimg-process,v_1,rw_1,rh_1,pad_1,color_ffffff?x-bce-process=image/format,f_auto",
-      "status": "published",
+      "status": "rejected",
       "createdBy": "2",
       "rooms": [
         {
-          "id": 1771682337859,
+          "id": 1771946196757,
           "name": "大床房",
           "price": 880
         },
         {
-          "id": 1771682337860,
+          "id": 1771946196758,
           "name": "双床房",
           "price": 825
         }
-      ]
+      ],
+      "rejectReason": "信息不全",
+      "operationHistory": [
+        {
+          "time": "2026-02-24 23:14:57",
+          "operator": "admin",
+          "action": "强制下线",
+          "detail": "无"
+        },
+        {
+          "time": "2026-02-25 14:14:36",
+          "operator": "6",
+          "action": "驳回申请",
+          "detail": "信息不全"
+        }
+      ],
+      "createdAt": "2026-02-24 23:16:29"
     },
     {
       "id": "1592",
@@ -441,17 +463,17 @@
       "mainImage": "https://img-md.veimg.cn/meadinindex/img5/2022/8/0402C1262A724F58A2F35F8E30AF59EA.jpg",
       "rooms": [
         {
-          "id": 1771942220285,
+          "id": 1771946143505,
           "name": "大床房",
           "price": 798
         },
         {
-          "id": 1771942220286,
+          "id": 1771946143506,
           "name": "双床房",
           "price": 1015
         }
       ],
-      "status": "published",
+      "status": "offline",
       "createdBy": "1",
       "createdAt": "2026-02-24 18:20:19",
       "rejectReason": "",
@@ -497,6 +519,18 @@
           "operator": "3",
           "action": "审核通过",
           "detail": "无"
+        },
+        {
+          "time": "2026-02-24 23:14:38",
+          "operator": "admin",
+          "action": "驳回申请",
+          "detail": "信息不全"
+        },
+        {
+          "time": "2026-02-24 23:17:07",
+          "operator": "admin",
+          "action": "强制下线",
+          "detail": "无"
         }
       ]
     },
@@ -515,17 +549,17 @@
       "mainImage": "https://k.sinaimg.cn/n/sinakd20120/122/w1442h1080/20231101/16fd-6a5005db53edbdd0598d631f6f7f8bd8.jpg/w700d1q75cms.jpg",
       "rooms": [
         {
-          "id": 1771942416574,
+          "id": 1771946146501,
           "name": "大床房",
           "price": 955
         },
         {
-          "id": 1771942416575,
+          "id": 1771946146502,
           "name": "园景房",
           "price": 975
         }
       ],
-      "status": "published",
+      "status": "offline",
       "createdBy": "1",
       "createdAt": "2026-02-24 22:13:36",
       "rejectReason": "",
@@ -534,6 +568,12 @@
           "time": "2026-02-24 22:14:37",
           "operator": "3",
           "action": "审核通过",
+          "detail": "无"
+        },
+        {
+          "time": "2026-02-24 23:16:58",
+          "operator": "admin",
+          "action": "强制下线",
           "detail": "无"
         }
       ]
@@ -581,6 +621,12 @@
       "username": "5",
       "password": "5",
       "role": "merchant"
+    },
+    {
+      "id": "6900",
+      "username": "6",
+      "password": "6",
+      "role": "admin"
     }
   ]
 }

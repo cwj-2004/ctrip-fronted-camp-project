@@ -1,15 +1,18 @@
+	// src/pages/Login.jsx
+	// 登录与注册页面：支持用户登录及新用户注册功能
 	import { useState } from 'react';
-	import { Button, Card, Form, Input, Select, message, Space } from 'antd'; // 引入 Space
+	import { Button, Card, Form, Input, Select, message, Space } from 'antd';
 	import { UserOutlined, LockOutlined, TeamOutlined, HomeOutlined } from '@ant-design/icons';
 	import { useNavigate } from 'react-router-dom';
-	import './Login.css'; // 引入美化样式
+	import './Login.css';
+	import { API_BASE_URL } from '../config';
 	const { Option } = Select;
 	const Login = () => {
-	  const [isLogin, setIsLogin] = useState(true); // 用于切换登录/注册视图
+	  const [isLogin, setIsLogin] = useState(true); 
 	  const [loading, setLoading] = useState(false);
 	  const navigate = useNavigate();
 	  const [form] = Form.useForm();
-	  // --- 登录逻辑 (完全保留你原有的暴力匹配逻辑) ---
+	  // 登录逻辑
 	  const handleLogin = async (values) => {
 	    const username = values.username.trim();
 	    const password = values.password.trim();
@@ -19,16 +22,13 @@
 	    }
 	    setLoading(true);
 	    try {
-	      // 1. 获取所有用户
-	      const response = await fetch('http://localhost:3001/users');
+	      const response = await fetch(`${API_BASE_URL}/users`);
 	      const allUsers = await response.json();
-	      // 2. 在前端精确查找：用户名和密码必须完全相等
 	      const foundUser = allUsers.find(
 	        u => u.username === username && u.password === password
 	      );
 	      if (foundUser) {
 	        message.success('登录成功！');
-	        // 存储用户信息
 	        window.sessionStorage.setItem('user', JSON.stringify(foundUser));
 	        navigate('/admin/dashboard');
 	      } else {
@@ -41,7 +41,7 @@
 	      setLoading(false);
 	    }
 	  };
-	  // --- 注册逻辑 (完全保留你原有的查重逻辑) ---
+	  // 注册逻辑
 	  const handleRegister = async (values) => {
 	    const username = values.username.trim();
 	    const password = values.password.trim();
@@ -51,31 +51,28 @@
 	    }
 	    setLoading(true);
 	    try {
-	      // 1. 获取所有用户
-	      const response = await fetch('http://localhost:3001/users');
+	      const response = await fetch(`${API_BASE_URL}/users`);
 	      const allUsers = await response.json();
-	      // 2. 检查用户名是否已存在 (完全相等才算存在)
 	      const isExist = allUsers.some(u => u.username === username);
 	      if (isExist) {
 	        message.error('该用户名已被注册！');
 	        setLoading(false);
 	        return;
 	      }
-	      // 3. 如果不存在，创建新用户
 	      const newUser = {
 	        username: username,
 	        password: password,
 	        role: values.role,
 	      };
-	      const postRes = await fetch('http://localhost:3001/users', {
+	      const postRes = await fetch(`${API_BASE_URL}/users`, {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(newUser),
 	      });
 	      if (postRes.ok) {
 	        message.success('注册成功！请登录');
-	        setIsLogin(true); // 切回登录页
-	        form.resetFields(); // 重置表单
+	        setIsLogin(true);
+	        form.resetFields();
 	      } else {
 	        message.error('注册失败');
 	      }
@@ -86,7 +83,6 @@
 	      setLoading(false);
 	    }
 	  };
-	  // 统一提交入口
 	  const onFinish = (values) => {
 	    if (isLogin) {
 	      handleLogin(values);
@@ -97,19 +93,16 @@
 	  return (
 	    <div className="login-container">
 	      <Card className="login-card">
-	        {/* Logo 区域 */}
 	        <div className="login-logo">
 	          <HomeOutlined className="icon" />
 	          <h1>易宿酒店管理系统</h1>
 	        </div>
-	        {/* 表单区域 */}
 	        <Form
 	          form={form}
 	          layout="vertical"
 	          onFinish={onFinish}
 	          initialValues={{ role: 'merchant' }}
 	        >
-	          {/* 用户名 */}
 	          <Form.Item 
 	            name="username" 
 	            rules={[{ required: true, message: '请输入用户名' }]}
@@ -120,7 +113,6 @@
 	              placeholder="用户名" 
 	            />
 	          </Form.Item>
-	          {/* 密码 */}
 	          <Form.Item 
 	            name="password" 
 	            rules={[{ required: true, message: '请输入密码' }]}
@@ -131,7 +123,6 @@
 	              placeholder="密码" 
 	            />
 	          </Form.Item>
-	          {/* 注册时才显示角色选择 */}
 	          {!isLogin && (
 	            <Form.Item 
 	              name="role" 
@@ -151,7 +142,6 @@
 	              </Select>
 	            </Form.Item>
 	          )}
-	          {/* 提交按钮 */}
 	          <Form.Item>
 	            <Button 
 	              className="login-button"
@@ -164,7 +154,6 @@
 	            </Button>
 	          </Form.Item>
 	        </Form>
-	        {/* 底部切换 */}
 	        <div className="login-footer">
 	          {isLogin ? (
 	            <span>

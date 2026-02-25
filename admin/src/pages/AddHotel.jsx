@@ -1,9 +1,11 @@
 	// src/pages/AddHotel.jsx
+	// 酒店录入页面：用于商户提交新酒店信息
 	import { Card, message, Form } from 'antd';
 	import { useNavigate } from 'react-router-dom';
 	import { useState } from 'react';
 	import HotelForm from '../components/HotelForm';
 	import dayjs from 'dayjs';
+	import { API_BASE_URL } from '../config';
 	const AddHotel = () => {
 	  const navigate = useNavigate();
 	  const [form] = Form.useForm();
@@ -21,7 +23,6 @@
 	      openDate: values.openDate ? dayjs(values.openDate).format('YYYY-MM-DD') : '',
 	      status: 'pending',
 	      createdBy: currentUser.username,
-	      // 【新增】添加创建时间，用于列表展示
 	      createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
 	      rooms: values.rooms ? values.rooms.map((room, index) => ({
 	        id: Date.now() + index,
@@ -31,7 +32,7 @@
 	    };
 	    setLoading(true);
 	    try {
-	      const response = await fetch('http://localhost:3001/hotels', {
+	      const response = await fetch(`${API_BASE_URL}/hotels`, {
 	        method: 'POST',
 	        headers: { 'Content-Type': 'application/json' },
 	        body: JSON.stringify(hotelData),

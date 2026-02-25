@@ -1,3 +1,5 @@
+	// src/components/HotelForm.jsx
+	// 酒店信息表单组件，用于新增和编辑场景
 	import { Form, Input, Button, InputNumber, Select, DatePicker, Space, Image, Row, Col, Divider } from 'antd';
 	import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 	const { Option } = Select;
@@ -9,9 +11,9 @@
 	      layout="vertical"
 	      onFinish={onFinish}
 	      autoComplete="off"
-	      initialValues={{ star: 3 }} // 默认星级
+	      initialValues={{ star: 3 }}
 	    >
-	      {/* 基础信息区 - 响应式栅格布局 */}
+	      {/* 基本信息 */}
 	      <h3 style={{ marginBottom: 20 }}>基本信息</h3>
 	      <Row gutter={24}>
 	        <Col xs={24} sm={12}>
@@ -64,6 +66,7 @@
 	          </Form.Item>
 	        </Col>
 	        <Col span={24}>
+	          {/* 图片实时预览 */}
 	          <Form.Item shouldUpdate={(prev, cur) => prev.mainImage !== cur.mainImage}>
 	            {({ getFieldValue }) => {
 	              const url = getFieldValue('mainImage');
@@ -82,7 +85,7 @@
 	        </Col>
 	      </Row>
 	      <Divider />
-	      {/* 房型列表区 */}
+	      {/* 房型信息 */}
 	      <h3 style={{ marginBottom: 10 }}>房型信息</h3>
 	      <Form.List name="rooms">
 	        {(fields, { add, remove }) => (

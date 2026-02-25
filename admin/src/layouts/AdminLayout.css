@@ -1,10 +1,9 @@
 	/* src/layouts/AdminLayout.css */
-	/* === 侧边栏样式优化 === */
+	/* 侧边栏样式 */
 	.custom-sider {
 	  box-shadow: 2px 0 8px rgba(0, 21, 41, 0.15);
 	  z-index: 20;
 	}
-	/* Logo 样式美化 */
 	.logo {
 	  height: 64px;
 	  display: flex;
@@ -19,7 +18,7 @@
 	.logo-icon {
 	  width: 40px;
 	  height: 40px;
-	  border-radius: 8px; /* 方形圆角 */
+	  border-radius: 8px;
 	  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	  color: #fff;
 	  display: flex;
@@ -38,12 +37,12 @@
 	  opacity: 1;
 	  transition: opacity 0.3s;
 	}
-	/* 侧边栏折叠时隐藏文字 */
+	/* 侧边栏折叠状态 */
 	.custom-sider.ant-layout-sider-collapsed .logo-text {
 	  opacity: 0;
 	  display: none;
 	}
-	/* === 顶部栏样式优化 === */
+	/* 顶部栏样式 */
 	.site-layout .site-layout-header {
 	  display: flex;
 	  justify-content: space-between;
@@ -61,7 +60,7 @@
 	  cursor: pointer;
 	  transition: color 0.3s;
 	  border-radius: 4px;
-	  color: #666; /* 确保折叠图标也是深色 */
+	  color: #666;
 	}
 	.trigger:hover {
 	  color: #1890ff;
@@ -71,7 +70,9 @@
 	  display: flex;
 	  align-items: center;
 	}
-	/* 【修改】Header Right：增加 Flex 布局，解决对齐问题 */
+	.header-left .ant-breadcrumb {
+	  color: #666;
+	}
 	.header-right {
 	  display: flex;
 	  align-items: center;
@@ -83,7 +84,6 @@
 	  color: #333;
 	  margin-left: 8px;
 	}
-	/* 【新增】通知铃铛样式：解决看不见的问题 */
 	.notification-wrapper {
 	  height: 100%;
 	  display: flex;
@@ -95,24 +95,20 @@
 	  border-radius: 4px;
 	}
 	.notification-wrapper:hover {
-	  background: #f0f0f0; /* 鼠标悬停背景变灰 */
+	  background: #f0f0f0;
 	}
-	/* 确保面包屑文字颜色正确 */
-	.header-left .ant-breadcrumb {
-	  color: #666;
-	}
-	/* === 主内容区域优化 === */
+	/* 主内容区域样式 */
 	.site-layout .site-layout-content {
 	  margin: 24px;
 	  padding: 24px;
 	  background: #fff;
 	  min-height: 280px;
-	  border-radius: 8px; /* 增加圆角 */
-	  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 轻微阴影 */
+	  border-radius: 8px;
+	  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 	  overflow: auto;
-	  transition: margin 0.2s; /* 响应式过渡 */
+	  transition: margin 0.2s;
 	}
-	/* 响应式处理：小屏幕下去掉内容区的边距 */
+	/* 响应式处理 */
 	@media (max-width: 768px) {
 	  .site-layout .site-layout-content {
 	    margin: 16px;
