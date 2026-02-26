@@ -8,7 +8,7 @@ function useQuery() {
   return useMemo(() => new URLSearchParams(search), [search]);
 }
 
-function HotelCard({ hotel, onClick }) {
+function HotelCard({ hotel, onClick, isHourly }) {
   const mainImage =
     hotel.cover || hotel.image || (hotel.images && hotel.images[0]) || '';
 
@@ -43,7 +43,9 @@ function HotelCard({ hotel, onClick }) {
       <div className="hotel-card-price">
         <div className="price-amount">
           ¥{hotel.basePrice}
-          <span className="price-unit">起/晚</span>
+          <span className="price-unit">
+            {isHourly ? '起/时段' : '起/晚'}
+          </span>
         </div>
       </div>
     </div>
@@ -401,6 +403,7 @@ export default function HotelList() {
             <HotelCard
               key={hotel.id}
               hotel={hotel}
+              isHourly={stayMode === 'hourly'}
               onClick={() => navigate(`/detail/${hotel.id}?${query.toString()}`)}
             />
           ))}

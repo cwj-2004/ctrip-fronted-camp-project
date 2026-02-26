@@ -9,10 +9,26 @@
       "basePrice": 936,
       "openDate": "2012-05-20",
       "status": "published",
-      "tags": ["亲子", "豪华", "免费停车场"],
+      "tags": [
+        "亲子",
+        "豪华",
+        "免费停车场"
+      ],
       "rooms": [
-        { "id": 101, "name": "经典双床房", "price": 936, "roomType": "过夜", "isHourly": false },
-        { "id": 102, "name": "行政大床房", "price": 1250, "roomType": "过夜", "isHourly": false }
+        {
+          "id": 101,
+          "name": "经典双床房",
+          "price": 936,
+          "roomType": "过夜",
+          "isHourly": false
+        },
+        {
+          "id": 102,
+          "name": "行政大床房",
+          "price": 1250,
+          "roomType": "过夜",
+          "isHourly": false
+        }
       ],
       "mainImage": "https://example.com/h1_banner.jpg"
     },
@@ -25,10 +41,25 @@
       "basePrice": 402,
       "openDate": "2018-10-12",
       "status": "published",
-      "tags": ["商务", "近地铁"],
+      "tags": [
+        "商务",
+        "近地铁"
+      ],
       "rooms": [
-        { "id": 201, "name": "标准单人房", "price": 402, "roomType": "过夜", "isHourly": false },
-        { "id": 202, "name": "高级大床房", "price": 550, "roomType": "过夜", "isHourly": false }
+        {
+          "id": 201,
+          "name": "标准单人房",
+          "price": 402,
+          "roomType": "过夜",
+          "isHourly": false
+        },
+        {
+          "id": 202,
+          "name": "高级大床房",
+          "price": 550,
+          "roomType": "过夜",
+          "isHourly": false
+        }
       ],
       "mainImage": "https://example.com/h2_banner.jpg"
     },
@@ -41,10 +72,30 @@
       "basePrice": 1800,
       "openDate": "2010-08-16",
       "status": "published",
-      "tags": ["地标景观", "高层视图"],
+      "tags": [
+        "地标景观",
+        "高层视图"
+      ],
       "rooms": [
-        { "id": 301, "name": "豪华大床房", "price": 1800, "roomType": "过夜", "isHourly": false },
-        { "id": 302, "name": "豪华大床房（钟点房）", "price": 480, "roomType": "钟点", "isHourly": true, "hourlySlots": ["06:00-12:00", "12:00-18:00", "18:00-24:00"] }
+        {
+          "id": 301,
+          "name": "豪华大床房",
+          "price": 1800,
+          "roomType": "过夜",
+          "isHourly": false
+        },
+        {
+          "id": 302,
+          "name": "豪华大床房（钟点房）",
+          "price": 480,
+          "roomType": "钟点",
+          "isHourly": true,
+          "hourlySlots": [
+            "06:00-12:00",
+            "12:00-18:00",
+            "18:00-24:00"
+          ]
+        }
       ],
       "mainImage": "https://example.com/h3_banner.jpg"
     },
@@ -57,9 +108,18 @@
       "basePrice": 350,
       "openDate": "2021-03-01",
       "status": "pending",
-      "tags": ["民宿", "西湖周边"],
+      "tags": [
+        "民宿",
+        "西湖周边"
+      ],
       "rooms": [
-        { "id": 401, "name": "温馨大床房", "price": 350, "roomType": "过夜", "isHourly": false }
+        {
+          "id": 401,
+          "name": "温馨大床房",
+          "price": 350,
+          "roomType": "过夜",
+          "isHourly": false
+        }
       ],
       "mainImage": "https://example.com/h4_banner.jpg"
     },
@@ -72,10 +132,30 @@
       "basePrice": 2100,
       "openDate": "2012-07-23",
       "status": "published",
-      "tags": ["奢华", "珠江新城"],
+      "tags": [
+        "奢华",
+        "珠江新城"
+      ],
       "rooms": [
-        { "id": 501, "name": "尊贵大床房", "price": 2100, "roomType": "过夜", "isHourly": false },
-        { "id": 502, "name": "塔景套房（钟点房）", "price": 580, "roomType": "钟点", "isHourly": true, "hourlySlots": ["06:00-12:00", "12:00-18:00", "18:00-24:00"] }
+        {
+          "id": 501,
+          "name": "尊贵大床房",
+          "price": 2100,
+          "roomType": "过夜",
+          "isHourly": false
+        },
+        {
+          "id": 502,
+          "name": "塔景套房（钟点房）",
+          "price": 580,
+          "roomType": "钟点",
+          "isHourly": true,
+          "hourlySlots": [
+            "06:00-12:00",
+            "12:00-18:00",
+            "18:00-24:00"
+          ]
+        }
       ],
       "mainImage": "https://example.com/h5_banner.jpg"
     },
@@ -88,9 +168,18 @@
       "basePrice": 1950,
       "openDate": "2020-12-28",
       "status": "offline",
-      "tags": ["海景", "设计感"],
+      "tags": [
+        "海景",
+        "设计感"
+      ],
       "rooms": [
-        { "id": 601, "name": "海景大床房", "price": 1950, "roomType": "过夜", "isHourly": false }
+        {
+          "id": 601,
+          "name": "海景大床房",
+          "price": 1950,
+          "roomType": "过夜",
+          "isHourly": false
+        }
       ],
       "mainImage": "https://example.com/h6_banner.jpg"
     },
@@ -103,9 +192,18 @@
       "basePrice": 680,
       "openDate": "2015-11-11",
       "status": "published",
-      "tags": ["复古", "川味美食"],
+      "tags": [
+        "复古",
+        "川味美食"
+      ],
       "rooms": [
-        { "id": 701, "name": "雅致套房", "price": 680, "roomType": "过夜", "isHourly": false }
+        {
+          "id": 701,
+          "name": "雅致套房",
+          "price": 680,
+          "roomType": "过夜",
+          "isHourly": false
+        }
       ],
       "mainImage": "https://example.com/h7_banner.jpg"
     },
@@ -118,9 +216,18 @@
       "basePrice": 750,
       "openDate": "1986-05-01",
       "status": "published",
-      "tags": ["老字号", "玄武湖畔"],
+      "tags": [
+        "老字号",
+        "玄武湖畔"
+      ],
       "rooms": [
-        { "id": 801, "name": "湖景双床房", "price": 750, "roomType": "过夜", "isHourly": false }
+        {
+          "id": 801,
+          "name": "湖景双床房",
+          "price": 750,
+          "roomType": "过夜",
+          "isHourly": false
+        }
       ],
       "mainImage": "https://example.com/h南京.jpg"
     },
@@ -133,9 +240,18 @@
       "basePrice": 480,
       "openDate": "2019-06-20",
       "status": "rejected",
-      "tags": ["近景区", "性价比"],
+      "tags": [
+        "近景区",
+        "性价比"
+      ],
       "rooms": [
-        { "id": 901, "name": "标准双人间", "price": 480, "roomType": "过夜", "isHourly": false }
+        {
+          "id": 901,
+          "name": "标准双人间",
+          "price": 480,
+          "roomType": "过夜",
+          "isHourly": false
+        }
       ],
       "mainImage": "https://example.com/h9.jpg"
     },
@@ -148,16 +264,58 @@
       "basePrice": 1350,
       "openDate": "2004-12-30",
       "status": "published",
-      "tags": ["沙滩", "度假优先"],
+      "tags": [
+        "沙滩",
+        "度假优先"
+      ],
       "rooms": [
-        { "id": 1001, "name": "园景房", "price": 1350, "roomType": "过夜", "isHourly": false },
-        { "id": 1002, "name": "海景房（钟点房）", "price": 520, "roomType": "钟点", "isHourly": true, "hourlySlots": ["06:00-12:00", "12:00-18:00", "18:00-24:00"] }
+        {
+          "id": 1001,
+          "name": "园景房",
+          "price": 1350,
+          "roomType": "过夜",
+          "isHourly": false
+        },
+        {
+          "id": 1002,
+          "name": "海景房（钟点房）",
+          "price": 520,
+          "roomType": "钟点",
+          "isHourly": true,
+          "hourlySlots": [
+            "06:00-12:00",
+            "12:00-18:00",
+            "18:00-24:00"
+          ]
+        }
       ],
       "mainImage": "https://example.com/h10.jpg"
     }
   ],
   "users": [
-    { "username": "admin", "role": "admin" },
-    { "username": "shanghu1", "role": "merchant" }
+    {
+      "username": "admin",
+      "role": "admin"
+    },
+    {
+      "username": "shanghu1",
+      "role": "merchant"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "f34c",
+      "hotelId": "2",
+      "hotelName": "艺龙安悦酒店(上海浦东大道店)",
+      "roomId": 202,
+      "roomName": "高级大床房",
+      "roomPrice": 550,
+      "isHourly": false,
+      "stayMode": "overnight",
+      "checkIn": "2026-02-26",
+      "checkOut": "2026-02-27",
+      "nights": 1,
+      "createdAt": "2026-02-26T08:45:03.777Z"
+    }
   ]
 }

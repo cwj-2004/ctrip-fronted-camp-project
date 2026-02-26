@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { NavBar, Swiper, SpinLoading } from 'antd-mobile';
+import { NavBar, Swiper, SpinLoading, Button, Toast } from 'antd-mobile';
 import axios from 'axios';
 
 export default function HotelDetail() {
@@ -10,6 +10,8 @@ export default function HotelDetail() {
   const [hotel, setHotel] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const [bookingSubmitting, setBookingSubmitting] = useState(false);
 
   const query = useMemo(
     () => new URLSearchParams(location.search),
@@ -18,6 +20,7 @@ export default function HotelDetail() {
 
   const checkIn = query.get('checkIn');
   const checkOut = query.get('checkOut');
+  const stayMode = query.get('stayMode') || 'overnight';
 
   useEffect(() => {
     if (!id) return;
@@ -52,10 +55,15 @@ export default function HotelDetail() {
 
   const rooms = useMemo(() => {
     if (!hotel || !Array.isArray(hotel.rooms)) return [];
-    const list = [...hotel.rooms];
+    let list = [...hotel.rooms];
+    if (stayMode === 'hourly') {
+      list = list.filter((room) => room.isHourly);
+    } else if (stayMode === 'overnight') {
+      list = list.filter((room) => !room.isHourly);
+    }
     list.sort((a, b) => (a.price || 0) - (b.price || 0));
     return list;
-  }, [hotel]);
+  }, [hotel, stayMode]);
 
   const nights = useMemo(() => {
     if (!checkIn || !checkOut) return 0;
@@ -65,6 +73,58 @@ export default function HotelDetail() {
     if (Number.isNaN(diff) || diff <= 0) return 0;
     return Math.round(diff / (1000 * 60 * 60 * 24));
   }, [checkIn, checkOut]);
+
+  useEffect(() => {
+    if (hotel?.name_zh) {
+      document.title = `${hotel.name_zh} - 易宿酒店`;
+    }
+  }, [hotel]);
+
+  const selectedRoom = useMemo(() => {
+    if (!selectedRoomId || !rooms || rooms.length === 0) return null;
+    return rooms.find((room) => room.id === selectedRoomId) || null;
+  }, [rooms, selectedRoomId]);
+
+  const handleSelectRoom = (room) => {
+    if (!room || !room.id) return;
+    setSelectedRoomId(room.id);
+  };
+
+  const handleBook = () => {
+    if (!hotel || !selectedRoom) {
+      Toast.show('请选择房型');
+      return;
+    }
+    if (!checkIn || !checkOut) {
+      Toast.show('请先选择入住和离店日期');
+      return;
+    }
+    const payload = {
+      hotelId: hotel.id,
+      hotelName: hotel.name_zh || hotel.name_en,
+      roomId: selectedRoom.id,
+      roomName: selectedRoom.name || selectedRoom.type,
+      roomPrice: selectedRoom.price,
+      isHourly: !!selectedRoom.isHourly,
+      stayMode,
+      checkIn,
+      checkOut,
+      nights,
+      createdAt: new Date().toISOString(),
+    };
+    setBookingSubmitting(true);
+    axios
+      .post('http://localhost:3001/bookings', payload)
+      .then(() => {
+        Toast.show('预订成功');
+      })
+      .catch(() => {
+        Toast.show('预订失败，请稍后重试');
+      })
+      .finally(() => {
+        setBookingSubmitting(false);
+      });
+  };
 
   return (
     <div className="page page-detail">
@@ -156,7 +216,15 @@ export default function HotelDetail() {
                 <div className="room-item">暂无房型信息</div>
               )}
               {rooms.map((room) => (
-                <div key={room.id || room.name} className="room-item">
+                <div
+                  key={room.id || room.name}
+                  className={
+                    room.id === selectedRoomId
+                      ? 'room-item room-item-selected'
+                      : 'room-item'
+                  }
+                  onClick={() => handleSelectRoom(room)}
+                >
                   <div className="room-info">
                     <div className="room-type">
                       {room.name || room.type}
@@ -171,11 +239,51 @@ export default function HotelDetail() {
                     )}
                   </div>
                   <div className="room-price">
-                    ¥{room.price}/{room.isHourly ? '次' : '晚'}
+                    <div className="unit-price">
+                      ¥{room.price}/{room.isHourly ? '次' : '晚'}
+                    </div>
+                    {nights > 1 && !room.isHourly && (
+                      <div className="total-price">
+                        总价: ¥{room.price * nights}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
+          </div>
+          <div className="detail-booking-bar">
+            <div className="booking-summary">
+              <div className="booking-room-name">
+                {selectedRoom
+                  ? selectedRoom.name || selectedRoom.type
+                  : '请选择房型'}
+              </div>
+              {selectedRoom && (
+                <div className="booking-price">
+                  <span className="booking-price-main">
+                    ¥
+                    {selectedRoom.price *
+                      (stayMode === 'hourly' || nights <= 0 ? 1 : nights)}
+                  </span>
+                  <span className="booking-price-unit">
+                    {stayMode === 'hourly'
+                      ? ' / 次'
+                      : nights > 1
+                      ? ` / 共 ${nights} 晚`
+                      : ' / 晚'}
+                  </span>
+                </div>
+              )}
+            </div>
+            <Button
+              color="primary"
+              onClick={handleBook}
+              loading={bookingSubmitting}
+              disabled={bookingSubmitting}
+            >
+              立即预订
+            </Button>
           </div>
         </>
       )}
