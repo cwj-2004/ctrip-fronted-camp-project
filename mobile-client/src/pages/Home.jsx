@@ -131,9 +131,18 @@ export default function Home() {
   const maxDate = addMonths(minDate, 6);
 
   const handleCalendarChange = (value) => {
-    if (!value || !value[0]) {
+    if (!value) return;
+
+    if (stayMode === 'hourly') {
+      const date = Array.isArray(value) ? value[0] : value;
+      if (!date) return;
+      setCheckIn(date);
+      setCheckOut(date);
+      setCalendarVisible(false);
       return;
     }
+
+    if (!Array.isArray(value) || !value[0]) return;
     if (!value[1]) {
       setCheckIn(value[0]);
       setCheckOut(null);
@@ -141,29 +150,14 @@ export default function Home() {
     }
     const start = value[0];
     const end = value[1];
-    if (stayMode === 'overnight') {
-      if (start.getTime() === end.getTime()) {
-        setCheckIn(start);
-        setCheckOut(null);
-        return;
-      }
+    if (start.getTime() === end.getTime()) {
       setCheckIn(start);
-      setCheckOut(end);
-      setCalendarVisible(false);
+      setCheckOut(null);
       return;
     }
-    if (stayMode === 'hourly') {
-      if (start.getTime() !== end.getTime()) {
-        Toast.show('钟点房需同日住退');
-        setCheckIn(start);
-        setCheckOut(start);
-        setCalendarVisible(false);
-        return;
-      }
-      setCheckIn(start);
-      setCheckOut(end);
-      setCalendarVisible(false);
-    }
+    setCheckIn(start);
+    setCheckOut(end);
+    setCalendarVisible(false);
   };
 
   const handleSearch = () => {
@@ -475,14 +469,16 @@ export default function Home() {
           <Calendar
             ref={calendarRef}
             key={`${calendarAnchor.getFullYear()}-${calendarAnchor.getMonth() + 1}`}
-            selectionMode="range"
+            selectionMode={stayMode === 'hourly' ? 'single' : 'range'}
             min={minDate}
             max={maxDate}
             defaultValue={
-              checkIn && checkOut
+              stayMode === 'hourly'
+                ? checkIn || calendarAnchor
+                : checkIn && checkOut
                 ? [checkIn, checkOut]
                 : [calendarAnchor, calendarAnchor]
-            }
+              }
             onChange={handleCalendarChange}
             onPageChange={(year, month) => {
               setCalendarPageYear(year);

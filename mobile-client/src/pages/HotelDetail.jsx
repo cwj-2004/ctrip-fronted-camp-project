@@ -1,6 +1,15 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { NavBar, Swiper, SpinLoading, Button, Toast } from 'antd-mobile';
+import {
+  NavBar,
+  Swiper,
+  SpinLoading,
+  Button,
+  Toast,
+  Calendar,
+  Popup,
+  Selector,
+} from 'antd-mobile';
 import axios from 'axios';
 
 export default function HotelDetail() {
@@ -12,15 +21,95 @@ export default function HotelDetail() {
   const [error, setError] = useState(null);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
   const [bookingSubmitting, setBookingSubmitting] = useState(false);
+  const [calendarVisible, setCalendarVisible] = useState(false);
 
-  const query = useMemo(
-    () => new URLSearchParams(location.search),
-    [location.search]
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [hourlySlot, setHourlySlot] = useState('');
+  const [stayMode, setStayMode] = useState('overnight');
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const queryStayMode = params.get('stayMode') || 'overnight';
+    let queryCheckIn = params.get('checkIn');
+    let queryCheckOut = params.get('checkOut');
+    const queryHourlySlot = params.get('hourlySlot') || '';
+
+    let needsRedirect = false;
+
+    if (!queryCheckIn || !queryCheckOut) {
+      const today = new Date();
+      if (queryStayMode === 'overnight') {
+        const tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+        queryCheckIn = formatDate(today);
+        queryCheckOut = formatDate(tomorrow);
+      } else { // hourly
+        queryCheckIn = formatDate(today);
+        queryCheckOut = formatDate(today);
+      }
+      params.set('checkIn', queryCheckIn);
+      params.set('checkOut', queryCheckOut);
+      if (queryStayMode === 'hourly' && !params.has('stayMode')) {
+        params.set('stayMode', 'hourly');
+      }
+      needsRedirect = true;
+    }
+    
+    setStayMode(queryStayMode);
+    setCheckIn(queryCheckIn);
+    setCheckOut(queryCheckOut);
+    setHourlySlot(queryHourlySlot);
+
+    if (needsRedirect) {
+      navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+    }
+  }, [location.search, location.pathname, navigate]);
+
+  const parseDate = (str) => {
+    if (!str) return null;
+    const parts = str.split('-');
+    if (parts.length !== 3) return null;
+    const year = Number(parts[0]);
+    const month = Number(parts[1]) - 1;
+    const day = Number(parts[2]);
+    if (!year || !month.toString() || !day) return null;
+    const d = new Date(year, month, day);
+    if (Number.isNaN(d.getTime())) return null;
+    return d;
+  };
+
+  const formatDate = (date) => {
+    if (!date || Number.isNaN(date.getTime())) return '';
+    const y = date.getFullYear();
+    const m = `${date.getMonth() + 1}`.padStart(2, '0');
+    const d = `${date.getDate()}`.padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
+  const addMonths = (date, months) => {
+    const d = new Date(date.getTime());
+    d.setMonth(d.getMonth() + months);
+    return d;
+  };
+
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
+  const minDate = today;
+  const maxDate = useMemo(() => addMonths(today, 6), [today]);
+
+  const hourlySlotOptions = useMemo(
+    () => [
+      { label: '06:00-12:00', value: 'morning' },
+      { label: '12:00-18:00', value: 'afternoon' },
+      { label: '18:00-24:00', value: 'evening' },
+    ],
+    []
   );
-
-  const checkIn = query.get('checkIn');
-  const checkOut = query.get('checkOut');
-  const stayMode = query.get('stayMode') || 'overnight';
 
   useEffect(() => {
     if (!id) return;
@@ -73,6 +162,54 @@ export default function HotelDetail() {
     if (Number.isNaN(diff) || diff <= 0) return 0;
     return Math.round(diff / (1000 * 60 * 60 * 24));
   }, [checkIn, checkOut]);
+
+  const handleCalendarChange = (value) => {
+    if (!value) return;
+
+    if (stayMode === 'hourly') {
+      const date = Array.isArray(value) ? value[0] : value;
+      if (!date) return;
+      const dateStr = formatDate(date);
+      setCheckIn(dateStr);
+      setCheckOut(dateStr);
+      const params = new URLSearchParams(location.search);
+      params.set('stayMode', 'hourly');
+      params.set('checkIn', dateStr);
+      params.set('checkOut', dateStr);
+      navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+      setCalendarVisible(false);
+      return;
+    }
+
+    if (!Array.isArray(value)) return;
+    const [start, end] = value;
+    if (!start) return;
+    if (!end) {
+      const startStr = formatDate(start);
+      setCheckIn(startStr);
+      setCheckOut('');
+      const params = new URLSearchParams(location.search);
+      params.set('checkIn', startStr);
+      params.delete('checkOut');
+      navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+      return;
+    }
+    const diff = end.getTime() - start.getTime();
+    const nightsCount = diff / (1000 * 60 * 60 * 24);
+    if (nightsCount < 1) {
+      Toast.show('过夜模式下，至少需要 1 晚');
+      return;
+    }
+    const startStr = formatDate(start);
+    const endStr = formatDate(end);
+    setCheckIn(startStr);
+    setCheckOut(endStr);
+    const params = new URLSearchParams(location.search);
+    params.set('checkIn', startStr);
+    params.set('checkOut', endStr);
+    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+    setCalendarVisible(false);
+  };
 
   useEffect(() => {
     if (hotel?.name_zh) {
@@ -169,8 +306,59 @@ export default function HotelDetail() {
           <div className="detail-section">
             <div className="section-title">行程信息</div>
             <div className="section-content">
+              <div className="calendar-mode-toggle">
+                <Button
+                  size="small"
+                  color="primary"
+                  fill={stayMode === 'overnight' ? 'solid' : 'outline'}
+                  onClick={() => {
+                    if (stayMode === 'overnight') return;
+                    setStayMode('overnight');
+                    setCheckIn('');
+                    setCheckOut('');
+                    setHourlySlot('');
+                    const params = new URLSearchParams(location.search);
+                    params.delete('stayMode');
+                    params.delete('hourlySlot');
+                    params.delete('checkIn');
+                    params.delete('checkOut');
+                    navigate(
+                      `${location.pathname}?${params.toString()}`,
+                      { replace: true }
+                    );
+                  }}
+                >
+                  过夜
+                </Button>
+                <Button
+                  size="small"
+                  color="primary"
+                  fill={stayMode === 'hourly' ? 'solid' : 'outline'}
+                  onClick={() => {
+                    if (stayMode === 'hourly') return;
+                    setStayMode('hourly');
+                    setCheckIn('');
+                    setCheckOut('');
+                    setHourlySlot('');
+                    const params = new URLSearchParams(location.search);
+                    params.set('stayMode', 'hourly');
+                    params.delete('hourlySlot');
+                    params.delete('checkIn');
+                    params.delete('checkOut');
+                    navigate(
+                      `${location.pathname}?${params.toString()}`,
+                      { replace: true }
+                    );
+                  }}
+                >
+                  钟点房（同日住退）
+                </Button>
+              </div>
               {checkIn && checkOut ? (
-                <div className="detail-trip-banner">
+                <div
+                  className="detail-trip-banner"
+                  onClick={() => setCalendarVisible(true)}
+                >
                   <div className="trip-dates">
                     <div className="trip-date-line">
                       <span className="date-label">入住</span>
@@ -181,12 +369,48 @@ export default function HotelDetail() {
                       <span className="date-value">{checkOut}</span>
                     </div>
                   </div>
-                  {nights > 0 && (
-                    <div className="trip-nights">共 {nights} 晚</div>
-                  )}
+                  <div className="trip-side">
+                    {stayMode === 'hourly' ? (
+                      <div className="trip-nights">钟点房</div>
+                    ) : (
+                      nights > 0 && (
+                        <div className="trip-nights">共 {nights} 晚</div>
+                      )
+                    )}
+                    <div className="trip-edit">
+                      <span className="trip-edit-text">点击修改</span>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                '未选择入住日期'
+                <Button
+                  size="small"
+                  color="primary"
+                  onClick={() => setCalendarVisible(true)}
+                >
+                  选择入住和离店日期
+                </Button>
+              )}
+              {stayMode === 'hourly' && (
+                <div className="hourly-slot-row">
+                  <div className="hourly-slot-title">钟点房时段</div>
+                  <Selector
+                    options={hourlySlotOptions}
+                    value={hourlySlot ? [hourlySlot] : []}
+                    onChange={(val) => {
+                      if (!val || !val[0]) return;
+                      const next = val[0];
+                      setHourlySlot(next);
+                      const params = new URLSearchParams(location.search);
+                      params.set('hourlySlot', next);
+                      params.set('stayMode', 'hourly');
+                      navigate(
+                        `${location.pathname}?${params.toString()}`,
+                        { replace: true }
+                      );
+                    }}
+                  />
+                </div>
               )}
             </div>
           </div>
@@ -211,45 +435,56 @@ export default function HotelDetail() {
           </div>
           <div className="detail-section">
             <div className="section-title">房型价格</div>
-            <div className="section-content rooms-list">
-              {rooms.length === 0 && (
-                <div className="room-item">暂无房型信息</div>
-              )}
-              {rooms.map((room) => (
-                <div
-                  key={room.id || room.name}
-                  className={
-                    room.id === selectedRoomId
-                      ? 'room-item room-item-selected'
-                      : 'room-item'
-                  }
-                  onClick={() => handleSelectRoom(room)}
-                >
-                  <div className="room-info">
-                    <div className="room-type">
-                      {room.name || room.type}
-                      {room.isHourly && (
-                        <span className="room-tag-hourly">钟点房</span>
-                      )}
-                    </div>
-                    {room.roomType && (
-                      <div className="room-meta">
-                        房型类型：{room.roomType}
+            <div className="section-content">
+              <div className="rooms-tip">点击下方房型即可选择</div>
+              <div className="rooms-list">
+                {rooms.length === 0 && (
+                  <div className="room-item">暂无房型信息</div>
+                )}
+                {rooms.map((room) => {
+                  const isSelected = room.id === selectedRoomId;
+                  return (
+                    <div
+                      key={room.id || room.name}
+                      className={
+                        isSelected
+                          ? 'room-item room-item-selected'
+                          : 'room-item'
+                      }
+                      onClick={() => handleSelectRoom(room)}
+                    >
+                      <div className="room-info">
+                        <div className="room-type">
+                          {room.name || room.type}
+                          {room.isHourly && (
+                            <span className="room-tag-hourly">钟点房</span>
+                          )}
+                        </div>
+
                       </div>
-                    )}
-                  </div>
-                  <div className="room-price">
-                    <div className="unit-price">
-                      ¥{room.price}/{room.isHourly ? '次' : '晚'}
-                    </div>
-                    {nights > 1 && !room.isHourly && (
-                      <div className="total-price">
-                        总价: ¥{room.price * nights}
+                      <div className="room-price">
+                        <div className="unit-price">
+                          ¥{room.price}/{room.isHourly ? '次' : '晚'}
+                        </div>
+                        {nights > 1 && !room.isHourly && (
+                          <div className="total-price">
+                            总价: ¥{room.price * nights}
+                          </div>
+                        )}
+                        <div
+                          className={
+                            isSelected
+                              ? 'room-select-label room-select-label-active'
+                              : 'room-select-label'
+                          }
+                        >
+                          {isSelected ? '已选择' : '点击选择'}
+                        </div>
                       </div>
-                    )}
-                  </div>
-                </div>
-              ))}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className="detail-booking-bar">
@@ -280,11 +515,35 @@ export default function HotelDetail() {
               color="primary"
               onClick={handleBook}
               loading={bookingSubmitting}
-              disabled={bookingSubmitting}
+              disabled={!selectedRoom || bookingSubmitting}
             >
               立即预订
             </Button>
           </div>
+          <Popup
+            visible={calendarVisible}
+            onMaskClick={() => setCalendarVisible(false)}
+            bodyStyle={{
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              minHeight: '40vh',
+            }}
+          >
+            <Calendar
+              selectionMode={stayMode === 'hourly' ? 'single' : 'range'}
+              min={minDate}
+              max={maxDate}
+              defaultValue={
+                stayMode === 'hourly'
+                  ? parseDate(checkIn) || today
+                  : [
+                      parseDate(checkIn) || today,
+                      parseDate(checkOut) || parseDate(checkIn) || today,
+                    ]
+              }
+              onChange={handleCalendarChange}
+            />
+          </Popup>
         </>
       )}
     </div>

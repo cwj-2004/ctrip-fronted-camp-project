@@ -216,6 +216,9 @@ export default function HotelList() {
           {nights > 0 && (
             <div className="list-nights">共 {nights} 晚</div>
           )}
+          {nights === 0 && stayMode === 'hourly' && (
+            <div className="list-nights">钟点房</div>
+          )}
         </div>
         <div className="list-header-actions">
           <div className="list-average-price">

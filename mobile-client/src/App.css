@@ -205,6 +205,7 @@
 .calendar-mode-toggle {
   display: flex;
   gap: 8px;
+  margin-bottom: 12px;
 }
 
 .hourly-slot-row {
@@ -215,6 +216,15 @@
   font-size: 12px;
   color: #888888;
   margin-bottom: 4px;
+}
+
+.hourly-slot-row .adm-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.hourly-slot-row .adm-selector-item {
+  margin-right: 0;
 }
 
 .calendar-header {
@@ -646,11 +656,19 @@
   padding: 8px 12px;
   border-radius: 8px;
   background-color: #f7f9fb;
+  cursor: pointer;
 }
 
 .trip-dates {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+}
+
+.trip-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   gap: 4px;
 }
 
@@ -664,6 +682,27 @@
   font-size: 13px;
   color: #0086ff;
   font-weight: 600;
+}
+
+.trip-edit {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #999999;
+}
+
+.trip-edit-text {
+  margin-right: 2px;
+}
+
+.trip-edit-arrow {
+  font-size: 14px;
+}
+
+.trip-hourly-slot {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #666666;
 }
 
 .facility-tag {
@@ -681,6 +720,12 @@
   gap: 8px;
 }
 
+.rooms-tip {
+  font-size: 12px;
+  color: #999999;
+  margin-bottom: 6px;
+}
+
 .room-item {
   display: flex;
   justify-content: space-between;
@@ -688,6 +733,7 @@
   padding: 10px 12px;
   border-radius: 8px;
   background-color: #f7f9fb;
+  cursor: pointer;
 }
 
 .room-type {
@@ -721,12 +767,35 @@
   background-color: #e6f3ff;
 }
 
+.room-select-label {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #999999;
+}
+
+.room-select-label-active {
+  color: #0086ff;
+}
+
 .detail-booking-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 500px;
+  margin: 0 auto;
   padding: 10px 16px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+  z-index: 100;
+}
+
+.page-detail {
+  padding-bottom: 80px;
 }
 
 .booking-summary {
