@@ -105,7 +105,7 @@ export default function HotelList() {
 
   const filteredHotels = useMemo(() => {
     let list = [...publishedHotels];
-    if (city) {
+    if (city && !keyword) {
       list = list.filter((h) => {
         const address = h.address || '';
         return address.includes(city);
@@ -119,21 +119,23 @@ export default function HotelList() {
       );
     }
     if (keyword) {
-      const lower = keyword.toLowerCase();
+      const keywords = keyword.toLowerCase().split(/\s+/).filter(k => k);
       list = list.filter((h) => {
-        const nameZh = h.name_zh || '';
-        const nameEn = h.name_en || '';
-        const address = h.address || '';
-        const tagsText = Array.isArray(h.tags) ? h.tags.join('') : '';
-         const roomsText = Array.isArray(h.rooms)
-           ? h.rooms.map((r) => r.name || '').join('')
-           : '';
-        return (
-          nameZh.toLowerCase().includes(lower) ||
-          nameEn.toLowerCase().includes(lower) ||
-          address.toLowerCase().includes(lower) ||
-          tagsText.toLowerCase().includes(lower) ||
-          roomsText.toLowerCase().includes(lower)
+        const nameZh = (h.name_zh || '').toLowerCase();
+        const nameEn = (h.name_en || '').toLowerCase();
+        const address = (h.address || '').toLowerCase();
+        const tagsText = Array.isArray(h.tags) ? h.tags.join('').toLowerCase() : '';
+        const roomsText = Array.isArray(h.rooms)
+          ? h.rooms.map((r) => r.name || '').join('').toLowerCase()
+          : '';
+        
+        // AND logic: all keywords must match at least one field
+        return keywords.every(k => 
+          nameZh.includes(k) ||
+          nameEn.includes(k) ||
+          address.includes(k) ||
+          tagsText.includes(k) ||
+          roomsText.includes(k)
         );
       });
     }
@@ -204,7 +206,7 @@ export default function HotelList() {
       <NavBar onBack={() => navigate(-1)}>酒店列表</NavBar>
       <div className="hotel-list-header">
         <div className="list-trip-info">
-          <div className="list-city">{city}</div>
+          <div className="list-city">{keyword ? '全站搜索' : city}</div>
           <div className="list-dates">
             {checkIn && checkOut
               ? `${checkIn} 至 ${checkOut}`

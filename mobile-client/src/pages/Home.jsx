@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   NavBar,
@@ -9,7 +9,9 @@ import {
   SearchBar,
   Toast,
   DatePicker,
+  Swiper,
 } from 'antd-mobile';
+import axios from 'axios';
 
 const provinceCityOptions = [
   {
@@ -92,6 +94,108 @@ export default function Home() {
   const [cityPickerVisible, setCityPickerVisible] = useState(false);
   const [provinceSearch, setProvinceSearch] = useState('');
   const [citySearch, setCitySearch] = useState('');
+  const [bannerHotels, setBannerHotels] = useState([]);
+  const [provinceCityOptions, setProvinceCityOptions] = useState([
+    {
+      province: '上海',
+      cities: ['上海'],
+    },
+    {
+      province: '北京',
+      cities: ['北京'],
+    },
+    {
+      province: '广东',
+      cities: ['广州', '深圳'],
+    },
+    {
+      province: '浙江',
+      cities: ['杭州', '宁波'],
+    },
+  ]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/hotels').then((res) => {
+      const allHotels = res.data || [];
+      
+      // Extract unique provinces and cities from hotel addresses
+      const locationMap = {};
+      
+      allHotels.forEach((hotel) => {
+        const address = hotel.address || '';
+        let province = '';
+        let city = '';
+
+        if (address.includes('上海')) {
+          province = '上海';
+          city = '上海';
+        } else if (address.includes('北京')) {
+          province = '北京';
+          city = '北京';
+        } else if (address.includes('天津')) {
+          province = '天津';
+          city = '天津';
+        } else if (address.includes('重庆')) {
+          province = '重庆';
+          city = '重庆';
+        } else {
+          // Check for specific cities first (based on db.json data)
+          if (address.includes('深圳')) { province = '广东'; city = '深圳'; }
+          else if (address.includes('广州')) { province = '广东'; city = '广州'; }
+          else if (address.includes('杭州')) { province = '浙江'; city = '杭州'; }
+          else if (address.includes('南京')) { province = '江苏'; city = '南京'; }
+          else if (address.includes('成都')) { province = '四川'; city = '成都'; }
+          else if (address.includes('西安')) { province = '陕西'; city = '西安'; }
+          else if (address.includes('三亚')) { province = '海南'; city = '三亚'; }
+          else {
+            // Fallback: try to parse "XX省XX市"
+            const provinceMatch = address.match(/(.+?)省/);
+            const cityMatch = address.match(/(.+?)市/);
+            if (provinceMatch && cityMatch) {
+              province = provinceMatch[1];
+              // City needs to be extracted carefully if it follows province
+              const cityPart = address.split('省')[1];
+              const citySubMatch = cityPart ? cityPart.match(/(.+?)市/) : null;
+              if (citySubMatch) {
+                city = citySubMatch[1];
+              }
+            }
+          }
+        }
+
+        if (province && city) {
+          if (!locationMap[province]) {
+            locationMap[province] = new Set();
+          }
+          locationMap[province].add(city);
+        }
+      });
+
+      // Convert map to options array
+      const dynamicOptions = Object.keys(locationMap).map((prov) => ({
+        province: prov,
+        cities: Array.from(locationMap[prov]),
+      }));
+
+      if (dynamicOptions.length > 0) {
+        setProvinceCityOptions(dynamicOptions);
+      }
+
+      // Filter hotels for banner based on current city
+      const cityHotels = allHotels.filter(
+        (h) => h.address && h.address.includes(city)
+      );
+      // Sort: hotels with mainImage first
+      cityHotels.sort((a, b) => {
+        const aHasImg = !!a.mainImage;
+        const bHasImg = !!b.mainImage;
+        if (aHasImg && !bHasImg) return -1;
+        if (!aHasImg && bHasImg) return 1;
+        return 0;
+      });
+      setBannerHotels(cityHotels);
+    });
+  }, [city]);
 
   const nights = calcNights(checkIn, checkOut);
 
@@ -242,12 +346,45 @@ export default function Home() {
   return (
     <div className="page page-home">
       <NavBar backArrow={false}>易宿酒店</NavBar>
-      <div
-        className="home-banner"
-        onClick={() => navigate(`/detail/${adHotelId}`)}
-      >
-        <div className="home-banner-title">发现下一次舒适入住</div>
-        <div className="home-banner-subtitle">精选酒店，轻松预订</div>
+      <div className="home-banner-container">
+        {bannerHotels.length > 0 ? (
+          <Swiper autoplay loop>
+            {bannerHotels.map((hotel) => (
+              <Swiper.Item key={hotel.id}>
+                <div
+                  className="home-banner"
+                  onClick={() => navigate(`/detail/${hotel.id}`)}
+                  style={
+                    hotel.mainImage
+                      ? {
+                          backgroundImage: `url(${hotel.mainImage})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                        }
+                      : {}
+                  }
+                >
+                  <div className="home-banner-content">
+                    <div className="home-banner-title">{hotel.name_zh}</div>
+                    <div className="home-banner-subtitle">
+                      {(hotel.tags && hotel.tags[0]) || '精选酒店'}
+                    </div>
+                  </div>
+                </div>
+              </Swiper.Item>
+            ))}
+          </Swiper>
+        ) : (
+          <div
+            className="home-banner"
+            onClick={() => navigate(`/detail/${adHotelId}`)}
+          >
+            <div className="home-banner-content">
+              <div className="home-banner-title">发现下一次舒适入住</div>
+              <div className="home-banner-subtitle">精选酒店，轻松预订</div>
+            </div>
+          </div>
+        )}
       </div>
       <div className="home-form">
         <div className="home-field">

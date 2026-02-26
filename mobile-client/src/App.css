@@ -23,13 +23,42 @@
   box-sizing: border-box;
 }
 
-.home-banner {
+.home-banner-container {
   margin-top: 12px;
   margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.home-banner {
   padding: 16px;
+  height: 120px; /* Fixed height for consistency */
   border-radius: 12px;
   background: linear-gradient(135deg, #0086ff, #4eb4ff);
   color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.home-banner-content {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.home-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 100%);
+  border-radius: 12px;
+  pointer-events: none;
 }
 
 .home-banner-title {
