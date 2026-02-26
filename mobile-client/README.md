@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# 易宿酒店预订平台 - 移动端
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 项目简介
 
-## Available Scripts
+本项目是“易宿酒店预订平台”的移动端应用，采用 React + Ant Design Mobile 构建。系统主要服务于普通用户（C端），实现了从酒店搜索、列表筛选、详情查看的完整预订流程，并提供了定位、日历选择等便捷交互功能。
 
-In the project directory, you can run:
+## 技术栈
 
-### `npm start`
+- **运行环境**：Node.js
+- **前端框架**：React 18
+- **UI 组件库**：Ant Design Mobile 5
+- **路由管理**：React Router v7
+- **HTTP 请求**：Axios
+- **构建工具**：Create React App (Webpack)
+- **后端模拟**：json-server
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 功能特性
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 1. 酒店搜索与筛选
 
-### `npm test`
+- **智能搜索**：支持关键字（酒店名/位置）、日期范围、星级价格等多维度筛选。
+- **定位服务**：集成 Geolocation API，一键获取当前位置并匹配所在城市。
+- **日期选择**：
+  - **智能默认值**：自动填充入住日期为今天，离店日期为明天。
+  - **同日住退**：支持钟点房场景下的同日入住与离店选择。
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 2. 酒店列表展示
 
-### `npm run build`
+- **多条件过滤**：支持按价格区间、星级、设施标签进行二次筛选。
+- **无限滚动**：列表页采用分页加载（Infinite Scroll），提升浏览体验。
+- **状态反馈**：加载中、加载失败、空数据等状态的友好提示。
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 3. 酒店详情与预订
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **沉浸式视觉**：顶部大图轮播展示酒店环境。
+- **信息聚合**：清晰展示酒店地址、设施标签、评分及价格信息。
+- **房型列表**：展示不同房型的价格、设施及预订按钮。
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 项目主要结构
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```text
+src/
+├── App.js              # 根组件与路由配置
+├── index.js            # 入口文件
+├── index.css           # 全局样式
+├── pages/
+│   ├── Home.jsx        # 首页（搜索与定位）
+│   ├── HotelList.jsx   # 酒店列表页
+│   └── HotelDetail.jsx # 酒店详情页
+```
