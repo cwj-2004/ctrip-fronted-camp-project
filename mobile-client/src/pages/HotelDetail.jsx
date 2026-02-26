@@ -276,6 +276,9 @@ export default function HotelDetail() {
       {error && !loading && (
         <div className="detail-error">{error}</div>
       )}
+      {!loading && !error && !hotel && (
+        <div className="detail-empty">未找到酒店信息</div>
+      )}
       {!loading && !error && hotel && (
         <>
           <div className="detail-images">
