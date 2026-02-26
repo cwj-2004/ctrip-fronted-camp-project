@@ -41,8 +41,10 @@ function HotelCard({ hotel, onClick }) {
         </div>
       </div>
       <div className="hotel-card-price">
-        <div className="price-amount">¥{hotel.basePrice}</div>
-        <div className="price-unit">起/晚</div>
+        <div className="price-amount">
+          ¥{hotel.basePrice}
+          <span className="price-unit">起/晚</span>
+        </div>
       </div>
     </div>
   );
@@ -76,6 +78,7 @@ export default function HotelList() {
   const [starFilter, setStarFilter] = useState(minStarParam);
   const [priceFilter, setPriceFilter] = useState(priceFilterParam);
   const [selectedTags, setSelectedTags] = useState(initialTags);
+  const [activeFilter, setActiveFilter] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -100,6 +103,12 @@ export default function HotelList() {
 
   const filteredHotels = useMemo(() => {
     let list = [...publishedHotels];
+    if (city) {
+      list = list.filter((h) => {
+        const address = h.address || '';
+        return address.includes(city);
+      });
+    }
     if (stayMode === 'hourly') {
       list = list.filter((h) =>
         Array.isArray(h.rooms)
@@ -146,12 +155,14 @@ export default function HotelList() {
       });
     }
     return list;
-  }, [publishedHotels, keyword, starFilter, priceFilter, selectedTags, stayMode]);
+  }, [publishedHotels, city, keyword, starFilter, priceFilter, selectedTags, stayMode]);
 
   const sortedHotels = useMemo(() => {
     const list = [...filteredHotels];
     if (sortOrder === 'priceAsc') {
       list.sort((a, b) => (a.basePrice || 0) - (b.basePrice || 0));
+    } else if (sortOrder === 'priceDesc') {
+      list.sort((a, b) => (b.basePrice || 0) - (a.basePrice || 0));
     }
     return list;
   }, [filteredHotels, sortOrder]);
@@ -219,75 +230,162 @@ export default function HotelList() {
         </div>
       </div>
       <div className="hotel-list-filters">
-        <div className="filter-group">
-          <div className="filter-label">排序</div>
-          <Selector
-            options={[
-              { label: '价格从低到高', value: 'priceAsc' },
-            ]}
-            value={[sortOrder]}
-            onChange={(val) => {
-              if (val && val[0]) {
-                setSortOrder(val[0]);
-                setPage(1);
+        <div className="filter-bar">
+          <button
+            type="button"
+            className={
+              activeFilter === 'sort' ? 'filter-chip filter-chip-active' : 'filter-chip'
+            }
+            onClick={() =>
+              setActiveFilter(activeFilter === 'sort' ? null : 'sort')
+            }
+          >
+            <span className="filter-chip-label">排序</span>
+            <span
+              className={
+                activeFilter === 'sort'
+                  ? 'filter-chip-arrow filter-chip-arrow-open'
+                  : 'filter-chip-arrow'
               }
-            }}
-          />
-        </div>
-        <div className="filter-group">
-          <div className="filter-label">星级</div>
-          <Selector
-            options={[
-              { label: '不限', value: 'all' },
-              { label: '3 星+', value: '3' },
-              { label: '4 星+', value: '4' },
-              { label: '5 星', value: '5' },
-            ]}
-            value={[starFilter]}
-            onChange={(val) => {
-              if (val && val[0]) {
-                setStarFilter(val[0]);
-                setPage(1);
+            >
+              ⌵
+            </span>
+          </button>
+          <button
+            type="button"
+            className={
+              activeFilter === 'star' ? 'filter-chip filter-chip-active' : 'filter-chip'
+            }
+            onClick={() =>
+              setActiveFilter(activeFilter === 'star' ? null : 'star')
+            }
+          >
+            <span className="filter-chip-label">星级</span>
+            <span
+              className={
+                activeFilter === 'star'
+                  ? 'filter-chip-arrow filter-chip-arrow-open'
+                  : 'filter-chip-arrow'
               }
-            }}
-          />
-        </div>
-        <div className="filter-group">
-          <div className="filter-label">价格</div>
-          <Selector
-            options={[
-              { label: '不限', value: 'all' },
-              { label: '¥0-300', value: '0-300' },
-              { label: '¥300-600', value: '300-600' },
-              { label: '¥600+', value: '600-' },
-            ]}
-            value={[priceFilter]}
-            onChange={(val) => {
-              if (val && val[0]) {
-                setPriceFilter(val[0]);
-                setPage(1);
+            >
+              ⌵
+            </span>
+          </button>
+          <button
+            type="button"
+            className={
+              activeFilter === 'price' ? 'filter-chip filter-chip-active' : 'filter-chip'
+            }
+            onClick={() =>
+              setActiveFilter(activeFilter === 'price' ? null : 'price')
+            }
+          >
+            <span className="filter-chip-label">价格</span>
+            <span
+              className={
+                activeFilter === 'price'
+                  ? 'filter-chip-arrow filter-chip-arrow-open'
+                  : 'filter-chip-arrow'
               }
-            }}
-          />
+            >
+              ⌵
+            </span>
+          </button>
+          <button
+            type="button"
+            className={
+              activeFilter === 'tags' ? 'filter-chip filter-chip-active' : 'filter-chip'
+            }
+            onClick={() =>
+              setActiveFilter(activeFilter === 'tags' ? null : 'tags')
+            }
+          >
+            <span className="filter-chip-label">快捷标签</span>
+            <span
+              className={
+                activeFilter === 'tags'
+                  ? 'filter-chip-arrow filter-chip-arrow-open'
+                  : 'filter-chip-arrow'
+              }
+            >
+              ⌵
+            </span>
+          </button>
         </div>
-      </div>
-      <div className="hotel-list-tags-filter">
-        <div className="filter-label">快捷标签</div>
-        <Selector
-          options={[
-            { label: '亲子', value: '亲子' },
-            { label: '豪华', value: '豪华' },
-            { label: '免费停车场', value: '免费停车场' },
-            { label: '含早', value: '含早' },
-            { label: '近地铁', value: '近地铁' },
-          ]}
-          multiple
-          value={selectedTags}
-          onChange={(val) => {
-            setSelectedTags(val);
-            setPage(1);
-          }}
-        />
+        {activeFilter === 'sort' && (
+          <div className="filter-panel">
+            <Selector
+              options={[
+                { label: '价格从低到高', value: 'priceAsc' },
+                { label: '价格从高到低', value: 'priceDesc' },
+              ]}
+              value={[sortOrder]}
+              onChange={(val) => {
+                if (val && val[0]) {
+                  setSortOrder(val[0]);
+                  setPage(1);
+                }
+              }}
+            />
+          </div>
+        )}
+        {activeFilter === 'star' && (
+          <div className="filter-panel">
+            <Selector
+              options={[
+                { label: '不限', value: 'all' },
+                { label: '3 星+', value: '3' },
+                { label: '4 星+', value: '4' },
+                { label: '5 星', value: '5' },
+              ]}
+              value={[starFilter]}
+              onChange={(val) => {
+                if (val && val[0]) {
+                  setStarFilter(val[0]);
+                  setPage(1);
+                }
+              }}
+            />
+          </div>
+        )}
+        {activeFilter === 'price' && (
+          <div className="filter-panel">
+            <Selector
+              options={[
+                { label: '不限', value: 'all' },
+                { label: '¥0-300', value: '0-300' },
+                { label: '¥300-600', value: '300-600' },
+                { label: '¥600+', value: '600-' },
+              ]}
+              value={[priceFilter]}
+              onChange={(val) => {
+                if (val && val[0]) {
+                  setPriceFilter(val[0]);
+                  setPage(1);
+                }
+              }}
+            />
+          </div>
+        )}
+        {activeFilter === 'tags' && (
+          <div className="filter-panel">
+            <Selector
+              options={[
+                { label: '亲子', value: '亲子' },
+                { label: '豪华', value: '豪华' },
+                { label: '免费停车场', value: '免费停车场' },
+                { label: '含早', value: '含早' },
+                { label: '近地铁', value: '近地铁' },
+              ]}
+              multiple
+              value={selectedTags}
+              onChange={(val) => {
+                setSelectedTags(val);
+                setPage(1);
+              }}
+            />
+          </div>
+        )}
       </div>
       {loading && (
         <div className="list-loading">

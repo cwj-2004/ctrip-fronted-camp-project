@@ -365,6 +365,28 @@
   gap: 8px;
 }
 
+.filter-bar {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-chip {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 2px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.filter-chip-active {
+  color: #0086ff;
+}
+
 .filter-label {
   font-size: 13px;
   color: #666666;
@@ -375,6 +397,25 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.filter-chip-label {
+  font-size: 14px;
+}
+
+.filter-chip-arrow {
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: 2px;
+  transition: transform 0.2s;
+}
+
+.filter-chip-arrow-open {
+  transform: rotate(180deg);
+}
+
+.filter-panel {
+  padding: 6px 4px 8px;
 }
 
 .hotel-list-tags-filter {
@@ -486,6 +527,7 @@
 .price-unit {
   font-size: 10px;
   color: #999999;
+  margin-left: 4px;
 }
 
 .page-detail {
