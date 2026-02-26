@@ -116,7 +116,7 @@ export default function HotelDetail() {
     setLoading(true);
     setError(null);
     axios
-      .get(`http://localhost:3001/hotels/${id}`)
+            .get(`http://192.168.31.228:3001/hotels/${id}`)
       .then((res) => {
         setHotel(res.data || null);
       })

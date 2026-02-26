@@ -10,7 +10,7 @@ function useQuery() {
 
 function HotelCard({ hotel, onClick, isHourly }) {
   const mainImage =
-    hotel.cover || hotel.image || (hotel.images && hotel.images[0]) || '';
+    hotel.mainImage || hotel.cover || hotel.image || (hotel.images && hotel.images[0]) || '';
 
   return (
     <div className="hotel-card" onClick={onClick}>
@@ -86,7 +86,7 @@ export default function HotelList() {
     setLoading(true);
     setError(null);
     axios
-      .get('http://localhost:3001/hotels')
+      .get('http://192.168.31.228:3001/hotels')
       .then((res) => {
         setHotels(res.data || []);
       })

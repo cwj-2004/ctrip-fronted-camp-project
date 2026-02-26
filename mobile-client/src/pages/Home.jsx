@@ -115,7 +115,7 @@ export default function Home() {
   ]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/hotels').then((res) => {
+    axios.get('http://192.168.31.228:3001/hotels').then((res) => {
       const allHotels = res.data || [];
       
       // Extract unique provinces and cities from hotel addresses
